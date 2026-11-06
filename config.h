@@ -1,0 +1,46 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define FILAS 5
+#define COLUMNAS 9
+
+#define ANCHO_CELDA 80
+#define ALTO_CELDA 90
+#define ALTO_MENU 100
+
+#define ANCHO_JARDIN (COLUMNAS * ANCHO_CELDA)
+#define ALTO_JARDIN (FILAS * ALTO_CELDA)
+
+#define TIPO_GUISANTE 0
+#define TIPO_GIRASOL 1
+#define TIPO_NUEZ 2
+
+
+#define VIDA_GUISANTE 300
+#define DANO_GUISANTE 20
+#define COSTO_GUISANTE 100
+#define PRODUCCION_GUISANTE 0
+#define COOLDOWN_GUISANTE 1.5
+
+
+
+#define VIDA_GIRASOL 300
+#define DANO_GIRASOL 0
+#define COSTO_GIRASOL 50
+#define PRODUCCION_GIRASOL 25
+#define COOLDOWN_GIRASOL 10.0
+
+
+#define VIDA_NUEZ 1000
+#define DANO_NUEZ 0
+#define COSTO_NUEZ 50
+#define PRODUCCION_NUEZ 0
+
+#define RADIO_SOL 18
+#define COOLDOWN_SOL 8.0
+
+#define CANT_PROYECTILES 50
+
+
+
+#endif
