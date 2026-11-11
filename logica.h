@@ -1,11 +1,13 @@
-
 #ifndef LOGICA_H
 #define LOGICA_H
+
+#include "config.h"
 #include "raylib.h"
 
-#define CANT_ZOMBIS 5
-#define CANT_PLANTAS 45
-#define CANT_SOLES 10
+#define CANT_ZOMBIS 50//provisional
+#define CANT_PLANTAS 45 //provisional
+#define CANT_SOLES 10 //provisional 
+#define CANT_PROYECTILES 50 //provisional
 
 
 typedef struct {
@@ -13,13 +15,22 @@ typedef struct {
     float x;
     int vida;
     int dano;
+    float temporizadorAtaque;
 } Zombi;
+
+
+typedef struct {
+    float x;
+    int activo;
+    int disponible;
+} Cortacesped;
+
 
 typedef struct{
     int tipo;
     int fila;
     int columna;
-    int vida;
+    float vida;;
     int dano;
     int costoSoles;
     int produccionSoles;
@@ -35,6 +46,8 @@ typedef struct {
     float cooldown;
 } Sol;
 
+
+
 typedef struct {
     float x;
     float y;
@@ -45,6 +58,7 @@ typedef struct {
 
 
 
+
 extern Zombi zombis[CANT_ZOMBIS];
 extern Planta plantas[CANT_PLANTAS];
 extern int solesJugador;
@@ -52,6 +66,10 @@ extern Sol soles[CANT_SOLES];
 extern float temporizadorSol;
 extern int plantaSeleccionada;
 extern Proyectil proyectiles[CANT_PROYECTILES];
+extern int oleadaActual;
+extern int zombisRestantes;
+extern float temporizadorOleada;
+extern Cortacesped cortacespedes[FILAS];
 
 
 //zombie
@@ -81,6 +99,29 @@ void seleccionarPlanta(int mouseX, int mouseY);
 void inicializarProyectiles(void);
 int generarProyectil(float x, float y, int fila, int dano);
 void moverProyectiles(float tiempo);
+int hayZombieDelante(int fila, float x);
+void detectarImpactos(void);
+void actualizarDisparos(float tiempo);
+
+//ataque
+int hayPlantaDelante(int fila, float x);
+void atacarPlanta(float tiempo);
+
+
+//oleada
+void iniciarOleada(void);
+int generarZombi(void);
+void actualizarOleadas(float tiempo);
+
+
+void inicializarCortacespedes(void);
+void activarCortacespedes(void);
+void actualizarCortacespedes(float tiempo);
+void activarCortacespedes(void);
+
+
+
+
 
 #endif
 
