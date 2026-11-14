@@ -11,12 +11,32 @@
 #define ANCHO_JARDIN (COLUMNAS * ANCHO_CELDA)
 #define ALTO_JARDIN (FILAS * ALTO_CELDA)
 
+#define ZOMBI_NORMAL 0
+#define ZOMBI_FLAG 1
+#define ZOMBI_SIN_CABEZA 2
+
+#define VIDA_ZOMBI_NORMAL 325
+#define DANO_ZOMBI_NORMAL 50
+#define VELOCIDAD_ZOMBI_NORMAL 17
+
+#define VIDA_ZOMBI_FLAG 325
+#define DANO_ZOMBI_FLAG 75
+#define VELOCIDAD_ZOMBI_FLAG 17
+
+#define VIDA_ZOMBI_SIN_CABEZA 600
+#define DANO_ZOMBI_SIN_CABEZA 100
+#define VELOCIDAD_ZOMBI_SIN_CABEZA 9
+
+
+
 #define TIPO_GUISANTE 0
 #define TIPO_GIRASOL 1
 #define TIPO_NUEZ 2
+#define TIPO_CACTUS 3
+
 
 #define VIDA_GUISANTE 300
-#define DANO_GUISANTE 25
+#define DANO_GUISANTE 20
 #define COSTO_GUISANTE 100
 #define PRODUCCION_GUISANTE 0
 #define COOLDOWN_GUISANTE 1.5
@@ -32,6 +52,14 @@
 #define COSTO_NUEZ 50
 #define PRODUCCION_NUEZ 0
 
+#define VIDA_CACTUS 250
+#define DANO_CACTUS 25
+#define COSTO_CACTUS 125
+#define PRODUCCION_CACTUS 0
+#define COOLDOWN_CACTUS 1.5
+
+
+
 #define RADIO_SOL 18
 #define COOLDOWN_SOL 8.0
 
@@ -39,6 +67,7 @@
 #define ZOMBIS_POR_OLEADA 5
 #define TIEMPO_ENTRE_ZOMBIS 3.0
 #define TIEMPO_ENTRE_OLEADAS 5.0
+#define MAX_OLEADAS 5
 
 // ---- Zona izquierda: casa + carril de cortacéspedes ----
 #define ANCHO_IMG_CASA  100                              // NUEVO: solo la imagen
@@ -50,6 +79,10 @@
 #define VEL_CORTACESPED    300
 
 #endif
+
+
+
+
 
 
 
