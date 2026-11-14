@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "raylib.h"
+#include <math.h>
 
 
 //variables y arreglos globales 
@@ -18,6 +19,12 @@ int zombisRestantes = 0;
 float temporizadorOleada = 0;
 float temporizadorEntreOleadas = 0;
 Cortacesped cortacespedes[FILAS];
+int juegoPerdido = 0;
+int zombisFlagPendientes = 0;
+int zombisSinCabezaPendientes = 0;
+int palaSeleccionada = 0;
+int juegoGanado = 0;
+
 
 
 void inicializarZombis(void) {
@@ -27,7 +34,8 @@ void inicializarZombis(void) {
         zombis[i].x = 0;
         zombis[i].fila = -1;
         zombis[i].vida = 0; //comienzan inactivos; las oleadas los generan
-        zombis[i].dano = DANO_ZOMBI;
+        zombis[i].dano = DANO_ZOMBI_NORMAL;
+        zombis[i].tipo = ZOMBI_NORMAL;
     }
 }
 
@@ -42,9 +50,20 @@ void moverZombis(float tiempo) {
                 zombis[i].x = 0;
                 continue;
             }
+
+            // Determinar la velocidad segun el tipo de zombi
+            float velocidad = VELOCIDAD_ZOMBI_NORMAL;
+
+            if (zombis[i].tipo == ZOMBI_FLAG) {
+                velocidad = VELOCIDAD_ZOMBI_FLAG;
+            }
+            else if (zombis[i].tipo == ZOMBI_SIN_CABEZA) {
+                velocidad = VELOCIDAD_ZOMBI_SIN_CABEZA;
+            }
+
             // Si no hay una planta delante, avanza
             if (!hayPlantaDelante(zombis[i].fila, zombis[i].x)) {
-                zombis[i].x -= 17 * tiempo;
+                zombis[i].x -= velocidad * tiempo;
             }
         }
     }
@@ -88,7 +107,8 @@ void inicializarPlantas(void){
 
 }
 
-int colocarPlanta(int fila, int columna, int tipo){
+
+int colocarPlanta(int fila, int columna, int tipo) {
     int costo;
 
     // Comprobar que la posicion este dentro del jardin
@@ -96,7 +116,7 @@ int colocarPlanta(int fila, int columna, int tipo){
         return 0;
     }
 
-    // Comprobar que el tipo de planta sea valido y obtener su costo
+    // Comprobar el tipo de planta y obtener su costo
     if (tipo == TIPO_GUISANTE) {
         costo = COSTO_GUISANTE;
     }
@@ -106,61 +126,70 @@ int colocarPlanta(int fila, int columna, int tipo){
     else if (tipo == TIPO_NUEZ) {
         costo = COSTO_NUEZ;
     }
+    else if (tipo == TIPO_CACTUS) {
+        costo = COSTO_CACTUS;
+    }
     else {
         return 0;
     }
 
-    // Comprobar que el jugador tenga suficientes soles antes de ocupar un espacio
+    // Comprobar que el jugador tenga suficientes soles
     if (solesJugador < costo) {
         return 0;
     }
 
     // Comprobar que la casilla no este ocupada
-    for(int i=0; i<CANT_PLANTAS;i++){
-        if(plantas[i].activa==1 && plantas[i].fila==fila && plantas[i].columna==columna){
+    for (int i = 0; i < CANT_PLANTAS; i++) {
+        if (plantas[i].activa == 1 &&
+            plantas[i].fila == fila &&
+            plantas[i].columna == columna) {
             return 0;
         }
     }
 
     // Buscar un espacio disponible
-    for(int i = 0; i < CANT_PLANTAS; i++){
-        if(plantas[i].activa == 0){
+    for (int i = 0; i < CANT_PLANTAS; i++) {
 
-            plantas[i].tipo=tipo;
-            plantas[i].fila=fila;
-            plantas[i].columna=columna;
+        if (plantas[i].activa == 0) {
+
+            plantas[i].tipo = tipo;
+            plantas[i].fila = fila;
+            plantas[i].columna = columna;
             plantas[i].temporizador = 0;
 
-            if(tipo==TIPO_GUISANTE){ //todas las carac. que tiene el guisante 
-                plantas[i].vida=VIDA_GUISANTE;
-                plantas[i].dano=DANO_GUISANTE;
+            if (tipo == TIPO_GUISANTE) {
+                plantas[i].vida = VIDA_GUISANTE;
+                plantas[i].dano = DANO_GUISANTE;
                 plantas[i].costoSoles = COSTO_GUISANTE;
                 plantas[i].produccionSoles = PRODUCCION_GUISANTE;
-                plantas[i].cooldown = COOLDOWN_GUISANTE;      
-
-        }
-            else if(tipo==TIPO_GIRASOL){ //todas las carac. que tiene el girasol
-                plantas[i].vida=VIDA_GIRASOL;
-                plantas[i].dano=DANO_GIRASOL;
+                plantas[i].cooldown = COOLDOWN_GUISANTE;
+            }
+            else if (tipo == TIPO_GIRASOL) {
+                plantas[i].vida = VIDA_GIRASOL;
+                plantas[i].dano = DANO_GIRASOL;
                 plantas[i].costoSoles = COSTO_GIRASOL;
                 plantas[i].produccionSoles = PRODUCCION_GIRASOL;
                 plantas[i].cooldown = COOLDOWN_GIRASOL;
             }
-            else if(tipo==TIPO_NUEZ){ //todas las carac. que tiene la nuez
-                plantas[i].vida=VIDA_NUEZ;
-                plantas[i].dano=DANO_NUEZ;
+            else if (tipo == TIPO_NUEZ) {
+                plantas[i].vida = VIDA_NUEZ;
+                plantas[i].dano = DANO_NUEZ;
                 plantas[i].costoSoles = COSTO_NUEZ;
                 plantas[i].produccionSoles = PRODUCCION_NUEZ;
                 plantas[i].cooldown = 0;
             }
-            else{
-                return 0;
+            else if (tipo == TIPO_CACTUS) {
+                plantas[i].vida = VIDA_CACTUS;
+                plantas[i].dano = DANO_CACTUS;
+                plantas[i].costoSoles = COSTO_CACTUS;
+                plantas[i].produccionSoles = PRODUCCION_CACTUS;
+                plantas[i].cooldown = COOLDOWN_CACTUS;
             }
 
             // Descontar el costo
             solesJugador -= plantas[i].costoSoles;
 
-            plantas[i].activa = 1; //activa la planta para que se use 
+            plantas[i].activa = 1;
 
             return 1;
         }
@@ -168,6 +197,7 @@ int colocarPlanta(int fila, int columna, int tipo){
 
     return 0;
 }
+
 
 
 void inicializarSoles(void) {
@@ -247,24 +277,56 @@ void producirSoles(float tiempo) { //produccion de soles por el girasol
 }
 
 
-void seleccionarPlanta(int mouseX, int mouseY) {
-    Vector2 mousePos = {(float)mouseX, (float)mouseY}; //guarda la posicion del mouse en el vector 2
 
-    //area de cada tarjeta 
+
+void seleccionarPlanta(int mouseX, int mouseY) {
+    Vector2 mousePos = {(float)mouseX, (float)mouseY};
+
     Rectangle tarjetaGuisante = {150, 10, 110, 80};
     Rectangle tarjetaGirasol = {270, 10, 110, 80};
     Rectangle tarjetaNuez = {390, 10, 110, 80};
+    Rectangle tarjetaCactus = {510, 10, 110, 80};
+    Rectangle tarjetaPala = {630, 10, 110, 80};
 
-    //comprueba sobre que tarjeta hizo clic el jugador 
-    if (CheckCollisionPointRec(mousePos, tarjetaGuisante)) { 
+    if (CheckCollisionPointRec(mousePos, tarjetaGuisante)) {
         plantaSeleccionada = TIPO_GUISANTE;
+        palaSeleccionada = 0;
     }
     else if (CheckCollisionPointRec(mousePos, tarjetaGirasol)) {
         plantaSeleccionada = TIPO_GIRASOL;
+        palaSeleccionada = 0;
     }
     else if (CheckCollisionPointRec(mousePos, tarjetaNuez)) {
         plantaSeleccionada = TIPO_NUEZ;
+        palaSeleccionada = 0;
     }
+    else if (CheckCollisionPointRec(mousePos, tarjetaCactus)) {
+        plantaSeleccionada = TIPO_CACTUS;
+        palaSeleccionada = 0;
+    }
+    else if (CheckCollisionPointRec(mousePos, tarjetaPala)) {
+        plantaSeleccionada = -1;
+        palaSeleccionada = 1;
+    }
+}
+
+
+void quitarPlanta(int fila, int columna) {
+
+    for (int i = 0; i < CANT_PLANTAS; i++) {
+
+        if (plantas[i].activa == 1 &&
+            plantas[i].fila == fila &&
+            plantas[i].columna == columna) {
+
+            plantas[i].activa = 0;
+            palaSeleccionada = 0;
+
+            return;
+        }
+    }
+
+    // Si no había planta, la pala sigue seleccionada
 }
 
 void inicializarProyectiles(void) {
@@ -322,20 +384,27 @@ int hayZombieDelante(int fila, float x) {
 }
 
 
+
 void actualizarDisparos(float tiempo) {
 
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
-        if (plantas[i].activa == 1 && plantas[i].tipo == TIPO_GUISANTE) { //comprueba que la planta este activa y sea guisante 
+        // Comprueba que la planta este activa y pueda disparar
+        if (plantas[i].activa == 1 &&
+            (plantas[i].tipo == TIPO_GUISANTE || plantas[i].tipo == TIPO_CACTUS)) {
 
-            //calcula el centro de la casilla donde esta el guisante 
+            // Calcula el centro de la casilla
             float x = plantas[i].columna * ANCHO_CELDA + ANCHO_CELDA / 2;
             float y = ALTO_MENU + plantas[i].fila * ALTO_CELDA + ALTO_CELDA / 2;
 
             plantas[i].temporizador += tiempo;
 
-            if (hayZombieDelante(plantas[i].fila, x)) { //comprueba si hay un zombie delante
-                if (plantas[i].temporizador >= plantas[i].cooldown) { //comprueba si ya paso el cooldown
+            // Comprueba si hay un zombie delante
+            if (hayZombieDelante(plantas[i].fila, x)) {
+
+                // Comprueba si ya paso el cooldown
+                if (plantas[i].temporizador >= plantas[i].cooldown) {
+
                     if (generarProyectil(x + 20, y, plantas[i].fila, plantas[i].dano)) {
                         plantas[i].temporizador = 0;
                     }
@@ -344,6 +413,7 @@ void actualizarDisparos(float tiempo) {
         }
     }
 }
+
 
 
 
@@ -409,22 +479,121 @@ void atacarPlanta(float tiempo) {
 void iniciarOleada(void) {
 
     zombisRestantes = ZOMBIS_POR_OLEADA * oleadaActual;
-    temporizadorOleada = 0; //espera tres segundos antes del primer zombi
+
+    // Calcula cuantos zombis bandera apareceran
+    zombisFlagPendientes = (oleadaActual + 2) / 3;
+
+    // Calcula cuantos zombis sin cabeza apareceran desde la oleada 2
+    zombisSinCabezaPendientes = oleadaActual / 2;
+
+    // Evita que haya mas zombis especiales que zombis disponibles
+    if (zombisFlagPendientes > zombisRestantes) {
+        zombisFlagPendientes = zombisRestantes;
+    }
+
+    if (zombisSinCabezaPendientes >
+        zombisRestantes - zombisFlagPendientes) {
+        zombisSinCabezaPendientes =
+            zombisRestantes - zombisFlagPendientes;
+    }
+
+    temporizadorOleada = 0;
 }
 
+
+
 int generarZombi(void) {
+
     for (int i = 0; i < CANT_ZOMBIS; i++) {
+
         if (!zombieVivo(i)) {
-            zombis[i].fila = rand() % FILAS;
-            zombis[i].x = ANCHO_JARDIN + 50;
-            zombis[i].vida = 325;
-            zombis[i].dano = DANO_ZOMBI;
+
+            int fila;
+            int espacioDisponible = 0;
+            float posicionX = ANCHO_JARDIN + 50;
+
+            // Buscar una fila donde haya espacio para aparecer
+            for (int intento = 0; intento < 20; intento++) {
+
+                fila = rand() % FILAS;
+                espacioDisponible = 1;
+
+                for (int j = 0; j < CANT_ZOMBIS; j++) {
+
+                    if (zombieVivo(j) && zombis[j].fila == fila) {
+
+                        if (fabsf(zombis[j].x - posicionX) < 100) {
+                            espacioDisponible = 0;
+                            break;
+                        }
+                    }
+                }
+
+                if (espacioDisponible) {
+                    break;
+                }
+            }
+
+            if (!espacioDisponible) {
+                return 0;
+            }
+
+            zombis[i].fila = fila;
+            zombis[i].x = posicionX;
+
+            // Guardar la cantidad de zombis especiales pendientes
+            int cantidadEspeciales =
+                zombisFlagPendientes + zombisSinCabezaPendientes;
+
+            // Decidir el tipo de zombi
+            int seleccion = rand() % zombisRestantes;
+
+            if (seleccion < zombisFlagPendientes) {
+
+                zombis[i].tipo = ZOMBI_FLAG;
+                zombisFlagPendientes--;
+
+            }
+            else if (seleccion < cantidadEspeciales) {
+
+                zombis[i].tipo = ZOMBI_SIN_CABEZA;
+                zombisSinCabezaPendientes--;
+
+            }
+            else {
+
+                zombis[i].tipo = ZOMBI_NORMAL;
+            }
+
+            // Asignar estadísticas según su tipo
+            if (zombis[i].tipo == ZOMBI_FLAG) {
+
+                zombis[i].vida = VIDA_ZOMBI_FLAG;
+                zombis[i].dano = DANO_ZOMBI_FLAG;
+
+            }
+            else if (zombis[i].tipo == ZOMBI_SIN_CABEZA) {
+
+                zombis[i].vida = VIDA_ZOMBI_SIN_CABEZA;
+                zombis[i].dano = DANO_ZOMBI_SIN_CABEZA;
+
+            }
+            else {
+
+                zombis[i].vida = VIDA_ZOMBI_NORMAL;
+                zombis[i].dano = DANO_ZOMBI_NORMAL;
+            }
 
             return 1;
         }
     }
+
     return 0;
 }
+
+
+
+
 
 void actualizarOleadas(float tiempo) {
 
@@ -455,13 +624,20 @@ void actualizarOleadas(float tiempo) {
             }
         }
 
-        // Si no queda ninguno, esperamos para la siguiente oleada
+        // Si no queda ninguno, esperamos
         if (zombisVivos == 0) {
 
             temporizadorEntreOleadas += tiempo;
 
             if (temporizadorEntreOleadas >= TIEMPO_ENTRE_OLEADAS) {
 
+                // Comprobamos si terminamos la ultima oleada
+                if (oleadaActual >= MAX_OLEADAS) {
+                    juegoGanado = 1;
+                    return;
+                }
+
+                // Iniciamos la siguiente oleada
                 oleadaActual++;
 
                 iniciarOleada();
@@ -522,6 +698,22 @@ void actualizarCortacespedes(float tiempo) {
     }
 }
 
+void comprobarDerrota(void) {
+    for (int i = 0; i < CANT_ZOMBIS; i++) {
+        if (zombieVivo(i) && zombis[i].x <= 0) {
+
+            int fila = zombis[i].fila;
+
+            if (fila >= 0 && fila < FILAS &&
+                cortacespedes[fila].disponible == 0 &&
+                cortacespedes[fila].activo == 0) {
+
+                juegoPerdido = 1;
+                break;
+            }
+        }
+    }
+}
 
 
 
