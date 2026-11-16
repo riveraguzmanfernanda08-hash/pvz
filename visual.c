@@ -17,24 +17,24 @@ Texture2D cactus;
 Texture2D lanzaguisantes;
 
 
-void iniciarVentana() {
+void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
     InitWindow(
         ANCHO_CASA + ANCHO_JARDIN,
         ALTO_MENU + FILAS * ALTO_CELDA,
         "Plants vs zombies"
     );
 
-    MaximizeWindow();
+    MaximizeWindow(); //maximizar ventana 
 }
 
-void cerrarVentana() {
+void cerrarVentana() { //cierra ventana
     CloseWindow();
 }
 
 
 void cargarCasa(void) {
     casa = LoadTexture("assets/casa.png");
-    SetTextureFilter(casa, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(casa, TEXTURE_FILTER_BILINEAR); //mejora la calidad de la textura 
 }
 
 void liberarCasa(void) {
@@ -56,10 +56,6 @@ void cargarZombieNormal(void) {
     zombieNormal = LoadTexture("assets/zombie_normal.png");
     SetTextureFilter(zombieNormal, TEXTURE_FILTER_POINT);
 
-    printf("zombie_normal: id=%u  %dx%d\n",
-           zombieNormal.id,
-           zombieNormal.width,
-           zombieNormal.height);
 }
 
 void liberarZombieNormal(void) {
@@ -67,15 +63,8 @@ void liberarZombieNormal(void) {
 }
 
 
-// ZOMBI BANDERA
 void cargarZombieFlag(void) {
     zombieFlag = LoadTexture("assets/zombie_flag.png");
-
-    printf("zombie_flag: id=%u  %dx%d\n",
-           zombieFlag.id,
-           zombieFlag.width,
-           zombieFlag.height);
-
     SetTextureFilter(zombieFlag, TEXTURE_FILTER_BILINEAR);
 }
 
@@ -88,11 +77,6 @@ void liberarZombieFlag(void) {
 void cargarZombieSinCabeza(void) {
     zombieSinCabeza = LoadTexture("assets/zombie_sin_cabeza.png");
     SetTextureFilter(zombieSinCabeza, TEXTURE_FILTER_POINT);
-
-    printf("zombie_sin_cabeza: id=%u  %dx%d\n",
-           zombieSinCabeza.id,
-           zombieSinCabeza.width,
-           zombieSinCabeza.height);
 }
 
 void liberarZombieSinCabeza(void) {
@@ -130,7 +114,7 @@ void liberarPlantas(void) {
 
 void dibujarJardin() {
 
-    DrawRectangle(
+    DrawRectangle(     // Dibuja la parte  donde esta el menu
         0, 0,
         ANCHO_CASA + ANCHO_JARDIN,
         ALTO_MENU,
@@ -140,7 +124,7 @@ void dibujarJardin() {
     for (int i = 0; i < FILAS; i++) {
 
         for (int j = 0; j < COLUMNAS; j++) {
-
+            // Calcula la posicion de cada casilla
             int x = ANCHO_CASA + j * ANCHO_CELDA;
             int y = ALTO_MENU + i * ALTO_CELDA;
 
@@ -153,14 +137,14 @@ void dibujarJardin() {
                 color = DARKGREEN;
             }
 
-            DrawRectangle(
+            DrawRectangle( // Dibuja cada casilla 
                 x, y,
                 ANCHO_CELDA,
                 ALTO_CELDA,
                 color
             );
 
-            DrawRectangleLines(
+            DrawRectangleLines( //Dibuja el borde de cada casilla 
                 x, y,
                 ANCHO_CELDA,
                 ALTO_CELDA,
@@ -173,7 +157,7 @@ void dibujarJardin() {
 
 void dibujarCasa(void) {
 
-    Rectangle destino = {
+    Rectangle destino = {     // Define la posicion y el tamaño de destino de la imagen
         0,
         ALTO_MENU,
         ANCHO_IMG_CASA,
@@ -186,7 +170,7 @@ void dibujarCasa(void) {
         casa.height
     };
 
-    DrawTexturePro(
+    DrawTexturePro(  // Dibuja la imagen al tamaño indicado
         casa,
         origen,
         destino,
@@ -204,19 +188,18 @@ void dibujarCortacespedes(void) {
 
     for (int i = 0; i < FILAS; i++) {
 
-        if (!cortacespedes[i].disponible &&
-            !cortacespedes[i].activo) {
+        if (!cortacespedes[i].disponible && !cortacespedes[i].activo) { // Si el cortacesped no esta disponible ni activo, no se dibuja
             continue;
         }
 
-        Rectangle destino = {
+        Rectangle destino = { //Define posicion y tamaño del cortacesped
             ANCHO_CASA + cortacespedes[i].x,
             ALTO_MENU + i * ALTO_CELDA + (ALTO_CELDA - alto) / 2,
             ancho,
             alto
         };
 
-        // Recortar 4 px del borde derecho
+        // Recortar 4 px del borde derecho de la imagen 
         Rectangle origen = {
             0, 0,
             cortacesped.width - 4,
@@ -235,7 +218,7 @@ void dibujarCortacespedes(void) {
 }
 
 
-void dibujarCarril(void) {
+void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 
     DrawRectangle(
         ANCHO_IMG_CASA,
@@ -270,14 +253,13 @@ void dibujarCarril(void) {
 
 
 void dibujarMenu(void) {
-    DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN);
+    DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN); //Fondo del menu
 
     DrawCircle(42, 47, 20, GOLD); // Mostrar cantidad de soles
-
+    //Convierte los soles a texto
     char textoSoles[20];
     sprintf(textoSoles, "%d", solesJugador);
     DrawText(textoSoles, 70, 35, 25, DARKBROWN);
-
 
     // TARJETA DEL GUISANTE
     DrawRectangle(150, 10, 110, 80, BEIGE);
@@ -292,7 +274,7 @@ void dibujarMenu(void) {
         0,
         WHITE
     );
-
+    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_GUISANTE) {
         DrawRectangleLinesEx((Rectangle){150, 10, 110, 80}, 4, GOLD);
     } else {
@@ -313,7 +295,7 @@ void dibujarMenu(void) {
         0,
         WHITE
     );
-
+    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_GIRASOL) {
         DrawRectangleLinesEx((Rectangle){270, 10, 110, 80}, 4, GOLD);
     } else {
@@ -334,13 +316,12 @@ void dibujarMenu(void) {
         0,
         WHITE
     );
-
+    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_NUEZ) {
         DrawRectangleLinesEx((Rectangle){390, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(390, 10, 110, 80, BLACK);
     }
-
 
     // TARJETA DEL CACTUS
     DrawRectangle(510, 10, 110, 80, BEIGE);
@@ -355,13 +336,12 @@ void dibujarMenu(void) {
         0,
         WHITE
     );
-
+    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_CACTUS) {
         DrawRectangleLinesEx((Rectangle){510, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(510, 10, 110, 80, BLACK);
     }
-
 
     // TARJETA DE LA PALA
     DrawRectangle(630, 10, 110, 80, BEIGE);
@@ -386,7 +366,7 @@ void dibujarMenu(void) {
         0,
         WHITE
     );
-
+    //Se resalta cuando es seleccionada
     if (palaSeleccionada == 1) {
         DrawRectangleLinesEx((Rectangle){630, 10, 110, 80}, 4, GOLD);
     } else {
@@ -404,7 +384,7 @@ void dibujarZombie(int x, int y) {
         (float)zombieNormal.height
     };
 
-    Rectangle destino = {
+    Rectangle destino = {   //Define la posicion y el tamaño del zombie 
         x, y + 5,
         50, 80
     };
@@ -474,7 +454,7 @@ void dibujarPlantas(void) {
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
         if (plantas[i].activa == 1) {
-
+            //Calcula la posicion de la planta segun su fila y columna
             int x = ANCHO_CASA + plantas[i].columna * ANCHO_CELDA;
             int y = ALTO_MENU + plantas[i].fila * ALTO_CELDA;
 
@@ -487,7 +467,7 @@ void dibujarPlantas(void) {
             };
 
             Rectangle origen;
-
+            //Comprueba el tipo de planta
             if (plantas[i].tipo == TIPO_GUISANTE) {
 
                 origen = (Rectangle){
@@ -566,10 +546,10 @@ void dibujarPlantas(void) {
 
 void dibujarSoles(void) {
 
-    for (int i = 0; i < CANT_SOLES; i++) {
+    for (int i = 0; i < CANT_SOLES; i++) { //Recorre todos los soles
 
-        if (soles[i].activo == 1) {
-
+        if (soles[i].activo == 1) { //Ve si esta activo
+            //Se obtiene la posicion del sol
             int x = ANCHO_CASA + (int)soles[i].x;
             int y = (int)soles[i].y;
 
@@ -581,10 +561,10 @@ void dibujarSoles(void) {
 
 
 void dibujarProyectiles(void) {
-
+    //Recorre todos los proyectiles
     for (int i = 0; i < CANT_PROYECTILES; i++) {
 
-        if (proyectiles[i].activo == 1) {
+        if (proyectiles[i].activo == 1) { //Ve si esta activo
 
             DrawCircle(
                 ANCHO_CASA + (int)proyectiles[i].x,
@@ -598,10 +578,8 @@ void dibujarProyectiles(void) {
 
 
 void dibujarOleada(void) {
-
+    //Convierte la oleada a texto
     char textoOleada[30];
-
     sprintf(textoOleada, "Oleada: %d", oleadaActual);
-
     DrawText(textoOleada, 760, 35, 25, WHITE);
 }
