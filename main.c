@@ -135,11 +135,7 @@ int main(void) {
                 Vector2 mousePos = GetMousePosition(); //Obtener la posicion del mouse
 
                 Rectangle boton = { //Posicion y tamaño del boton
-                    (ANCHO_CASA + ANCHO_JARDIN - 240) / 2,
-                    380,
-                    240,
-                    60
-                };
+                    (ANCHO_CASA + ANCHO_JARDIN - 240) / 2, 380,240,60 };
 
                 if (CheckCollisionPointRec(mousePos, boton)) { //Ver si el clic fue en el boton
                     reiniciarPartida();
