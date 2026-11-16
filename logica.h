@@ -15,7 +15,6 @@ typedef struct {
     float x;
     int vida;
     int dano;
-    float temporizadorAtaque;
     int tipo;
 } Zombi;
 
@@ -30,10 +29,9 @@ typedef struct{
     int tipo;
     int fila;
     int columna;
-    float vida;;
+    float vida;
     int dano;
     int costoSoles;
-    int produccionSoles;
     float cooldown;
     float temporizador;
     int activa;
@@ -125,7 +123,6 @@ void actualizarOleadas(float tiempo);
 void inicializarCortacespedes(void);
 void activarCortacespedes(void);
 void actualizarCortacespedes(float tiempo);
-void activarCortacespedes(void);
 
 void comprobarDerrota(void);
 
