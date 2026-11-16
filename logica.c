@@ -7,18 +7,18 @@
 
 
 //variables y arreglos globales 
-Zombi zombis[CANT_ZOMBIS];
-Planta plantas[CANT_PLANTAS];
-int solesJugador = 200;
-Sol soles[CANT_SOLES];
-float temporizadorSol = 0;
-int plantaSeleccionada = -1;
-Proyectil proyectiles[CANT_PROYECTILES];
+Zombi zombis[CANT_ZOMBIS]; //guarda todos los zombis
+Planta plantas[CANT_PLANTAS]; //guarda todas las plantas
+int solesJugador = 200; //cantidad de soles al iniciar
+Sol soles[CANT_SOLES];  //guaarda los soles que aparecen en el jardin
+float temporizadorSol = 0; //temporizador para generar soles
+int plantaSeleccionada = -1; 
+Proyectil proyectiles[CANT_PROYECTILES]; //guarda todos los proyectiles 
 int oleadaActual = 1;
 int zombisRestantes = 0;
 float temporizadorOleada = 0;
 float temporizadorEntreOleadas = 0;
-Cortacesped cortacespedes[FILAS];
+Cortacesped cortacespedes[FILAS]; //guarda los cortacespedes
 int juegoPerdido = 0;
 int zombisFlagPendientes = 0;
 int zombisSinCabezaPendientes = 0;
@@ -30,7 +30,7 @@ int juegoGanado = 0;
 void inicializarZombis(void) {
     srand(time(NULL)); //inicializa los numeros aleatorios
 
-    for (int i = 0; i < CANT_ZOMBIS; i++) {
+    for (int i = 0; i < CANT_ZOMBIS; i++) { //recorre todod los espacios del arreglo de zombies
         zombis[i].x = 0;
         zombis[i].fila = -1;
         zombis[i].vida = 0; //comienzan inactivos; las oleadas los generan
@@ -40,11 +40,11 @@ void inicializarZombis(void) {
 }
 
 
-void moverZombis(float tiempo) {
+void moverZombis(float tiempo) { //actualiza la posicion de los zombies para que avancen
 
-    for (int i = 0; i < CANT_ZOMBIS; i++) {
+    for (int i = 0; i < CANT_ZOMBIS; i++) { //recorre todos los zombies 
 
-        if (zombieVivo(i)) {
+        if (zombieVivo(i)) { //ve si esta vivo
             // Si llega a la casa, se detiene
             if (zombis[i].x <= 0) {
                 zombis[i].x = 0;
@@ -53,7 +53,7 @@ void moverZombis(float tiempo) {
 
             // Determinar la velocidad segun el tipo de zombi
             float velocidad = VELOCIDAD_ZOMBI_NORMAL;
-
+            //Ve que tipo de zombie es 
             if (zombis[i].tipo == ZOMBI_FLAG) {
                 velocidad = VELOCIDAD_ZOMBI_FLAG;
             }
@@ -71,17 +71,17 @@ void moverZombis(float tiempo) {
 
 
 int zombieVivo(int numeroZombie){ //comprueba si un zombie sigue vivo segun la vida que le queda
-    if(zombis[numeroZombie].vida>0){
+    if(zombis[numeroZombie].vida>0){ //si es mayor a 0, sigue vivo
         return 1;
     }
-    else{
+    else{ //si su vida es 0 o menor, ya esta muerto
         return 0;
     }
 }
 
 void recibirDano(int numeroZombie, int cantidadDano){ //resta vida al zombie cuando recibe un proyectil
-    if(zombieVivo(numeroZombie)){
-        zombis[numeroZombie].vida -= cantidadDano;
+    if(zombieVivo(numeroZombie)){ //ve si el zombie sigue vivo
+        zombis[numeroZombie].vida -= cantidadDano; //resta la vida al zombie
          if (zombis[numeroZombie].vida < 0){ //evita que el zombie quede en negativo
         zombis[numeroZombie].vida = 0;
         }
@@ -108,7 +108,7 @@ void inicializarPlantas(void){
 }
 
 
-int colocarPlanta(int fila, int columna, int tipo) {
+int colocarPlanta(int fila, int columna, int tipo) { //coloca una planta en la fila y columna indicada
     int costo;
 
     // Comprobar que la posicion este dentro del jardin
@@ -186,7 +186,7 @@ int colocarPlanta(int fila, int columna, int tipo) {
                 plantas[i].cooldown = COOLDOWN_CACTUS;
             }
 
-            // Descontar el costo
+            //descuenta el costo
             solesJugador -= plantas[i].costoSoles;
 
             plantas[i].activa = 1;
@@ -209,7 +209,7 @@ void inicializarSoles(void) {
     temporizadorSol = 0;
 }
 
-void generarSol(void) {
+void generarSol(void) {  //genera un sol en una posicion aleatoria del jardin
     for (int i = 0; i < CANT_SOLES; i++) {
         if (soles[i].activo == 0) { //busca un espacio libre en el arreglo.
             soles[i].x = 50 + rand() % (ANCHO_JARDIN - 100); //Genera una posicion aleatoria dentro del jardin.
@@ -230,9 +230,9 @@ void recogerSol(Vector2 mousePos) {
 
             // Obtiene el centro del sol considerando el espacio de la casa
             Vector2 centro = {ANCHO_CASA + soles[i].x, soles[i].y};
-            if (CheckCollisionPointCircle(mousePos, centro, RADIO_SOL)) {
-                solesJugador += 25;
-                soles[i].activo = 0;
+            if (CheckCollisionPointCircle(mousePos, centro, RADIO_SOL)) { //comprueba si el mouse esta dentro del circulo del sol
+                solesJugador += 25; //aumenta los soles del jugador
+                soles[i].activo = 0; //desactiva el sol despues de recogerlo
             }
         }
     }
@@ -243,7 +243,7 @@ void actualizarSoles(float tiempo) {
 
     if (temporizadorSol >= COOLDOWN_SOL) { //genera un sol cuando se cumple el cooldown
         generarSol();
-        temporizadorSol = 0;
+        temporizadorSol = 0; //reinicia el temporizador
     }
 }
 
@@ -253,7 +253,7 @@ int generarSolEn(float x, float y) { //genera un sol en una posicion especifica
             soles[i].x = x;
             soles[i].y = y;
             soles[i].activo = 1;
-            return 1;
+            return 1; //indica que el sol se pudo generar 
         }
     }
     return 0;
@@ -279,15 +279,16 @@ void producirSoles(float tiempo) { //produccion de soles por el girasol
 
 
 
-void seleccionarPlanta(int mouseX, int mouseY) {
+void seleccionarPlanta(int mouseX, int mouseY) { 
     Vector2 mousePos = {(float)mouseX, (float)mouseY};
-
+    // Define el area de cada tarjeta del menu
     Rectangle tarjetaGuisante = {150, 10, 110, 80};
     Rectangle tarjetaGirasol = {270, 10, 110, 80};
     Rectangle tarjetaNuez = {390, 10, 110, 80};
     Rectangle tarjetaCactus = {510, 10, 110, 80};
     Rectangle tarjetaPala = {630, 10, 110, 80};
 
+    // Comprueba si el jugador hizo clic en la tarjeta
     if (CheckCollisionPointRec(mousePos, tarjetaGuisante)) {
         plantaSeleccionada = TIPO_GUISANTE;
         palaSeleccionada = 0;
@@ -311,16 +312,17 @@ void seleccionarPlanta(int mouseX, int mouseY) {
 }
 
 
-void quitarPlanta(int fila, int columna) {
+void quitarPlanta(int fila, int columna) { //quita una planta de la casilla indicada
 
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
+        // Busca una planta activa que este en la fila y columna indicadas
         if (plantas[i].activa == 1 &&
             plantas[i].fila == fila &&
             plantas[i].columna == columna) {
 
-            plantas[i].activa = 0;
-            palaSeleccionada = 0;
+            plantas[i].activa = 0; //desactiva la planta
+            palaSeleccionada = 0; //deselecciona la pala
 
             return;
         }
@@ -339,11 +341,11 @@ void inicializarProyectiles(void) {
     }
 }
 
-int generarProyectil(float x, float y, int fila, int dano) {
+int generarProyectil(float x, float y, int fila, int dano) { 
 
     for (int i = 0; i < CANT_PROYECTILES; i++) { //busca un espacio disponible
 
-        if (proyectiles[i].activo == 0) {
+        if (proyectiles[i].activo == 0) { //busca un espacio disponible
 
             proyectiles[i].x = x;
             proyectiles[i].y = y;
@@ -351,11 +353,11 @@ int generarProyectil(float x, float y, int fila, int dano) {
             proyectiles[i].dano = dano;
             proyectiles[i].activo = 1;
 
-            return 1;
+            return 1; //indica que el proyectil se pudo generar
         }
     }
 
-    return 0;
+    return 0; //indica que no habia espacio disponible 
 }
 
 void moverProyectiles(float tiempo) { //mueve los proyectiles hacia la derecha
@@ -364,7 +366,7 @@ void moverProyectiles(float tiempo) { //mueve los proyectiles hacia la derecha
 
         if (proyectiles[i].activo == 1) {
 
-            proyectiles[i].x += 300 * tiempo;
+            proyectiles[i].x += 300 * tiempo; //actualiza la posicion del proyectil
 
             //desactiva el proyectil cuando se sale del jardin
             if (proyectiles[i].x > ANCHO_JARDIN) { 
@@ -376,11 +378,12 @@ void moverProyectiles(float tiempo) { //mueve los proyectiles hacia la derecha
 
 int hayZombieDelante(int fila, float x) {
     for (int i = 0; i < CANT_ZOMBIS; i++) {
+          //Ve si el zombie que esta vivo, en la misma fila y delante de la planta
         if (zombieVivo(i) && zombis[i].fila == fila && zombis[i].x > x && zombis[i].x < ANCHO_JARDIN){
-            return 1;
+            return 1; //hay un zombie delante
         }
     }
-    return 0;
+    return 0; //no hay zombie delante
 }
 
 
@@ -390,14 +393,13 @@ void actualizarDisparos(float tiempo) {
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
         // Comprueba que la planta este activa y pueda disparar
-        if (plantas[i].activa == 1 &&
-            (plantas[i].tipo == TIPO_GUISANTE || plantas[i].tipo == TIPO_CACTUS)) {
+        if (plantas[i].activa == 1 && (plantas[i].tipo == TIPO_GUISANTE || plantas[i].tipo == TIPO_CACTUS)) {
 
             // Calcula el centro de la casilla
             float x = plantas[i].columna * ANCHO_CELDA + ANCHO_CELDA / 2;
             float y = ALTO_MENU + plantas[i].fila * ALTO_CELDA + ALTO_CELDA / 2;
 
-            plantas[i].temporizador += tiempo;
+            plantas[i].temporizador += tiempo; //actualiza el tiempo de espera
 
             // Comprueba si hay un zombie delante
             if (hayZombieDelante(plantas[i].fila, x)) {
@@ -405,16 +407,14 @@ void actualizarDisparos(float tiempo) {
                 // Comprueba si ya paso el cooldown
                 if (plantas[i].temporizador >= plantas[i].cooldown) {
 
-                    if (generarProyectil(x + 20, y, plantas[i].fila, plantas[i].dano)) {
-                        plantas[i].temporizador = 0;
+                    if (generarProyectil(x + 20, y, plantas[i].fila, plantas[i].dano)) { //genera un proyectil desde la posicion de la planta
+                        plantas[i].temporizador = 0; //reinicia el temporizador
                     }
                 }
             }
         }
     }
 }
-
-
 
 
 void detectarImpactos(void) {
@@ -425,7 +425,7 @@ void detectarImpactos(void) {
             if (zombieVivo(j) && proyectiles[i].fila == zombis[j].fila && proyectiles[i].x >= zombis[j].x &&proyectiles[i].x <= zombis[j].x + ANCHO_CELDA / 2) {
                 recibirDano(j, proyectiles[i].dano); //resta vida al zombie 
                 proyectiles[i].activo = 0; //desativa el proyectil luego del impacto
-                break;
+                break; //termina de buscar el proyectil
             }
         }
     }
@@ -438,37 +438,36 @@ int hayPlantaDelante(int fila, float x) {
 
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
-        if (plantas[i].activa == 1 &&
-            plantas[i].fila == fila &&
-            plantas[i].columna * ANCHO_CELDA < x &&
-            plantas[i].columna * ANCHO_CELDA + ANCHO_CELDA > x - 17) {
+        // Ve que la planta este activa, en la misma fila y que este delante del zombie
+        if (plantas[i].activa == 1 && plantas[i].fila == fila &&
+            plantas[i].columna * ANCHO_CELDA < x && plantas[i].columna * ANCHO_CELDA + ANCHO_CELDA > x - 17) {
 
-            float distancia = x - (plantas[i].columna * ANCHO_CELDA + ANCHO_CELDA);
+            float distancia = x - (plantas[i].columna * ANCHO_CELDA + ANCHO_CELDA); //calcula la distancia entre el zombie y la planta
 
-            if (distancia < distanciaMenor) {
+            if (distancia < distanciaMenor) { //guarda la planta encontrada que esta mas cerca 
                 distanciaMenor = distancia;
                 plantaEncontrada = 1;
             }
         }
     }
-    return plantaEncontrada;
+    return plantaEncontrada; //retorna 1 si encontro una planta y 0 si no
 }
 
 
 void atacarPlanta(float tiempo) {
     for (int i = 0; i < CANT_ZOMBIS; i++) {
-        if (zombieVivo(i)) {
-            for (int j = 0; j < CANT_PLANTAS; j++) {
-                if (plantas[j].activa == 1 &&
-                    plantas[j].fila == zombis[i].fila &&
-                    plantas[j].columna * ANCHO_CELDA < zombis[i].x &&
-                    plantas[j].columna * ANCHO_CELDA + ANCHO_CELDA > zombis[i].x - 17) {
-                    plantas[j].vida -= zombis[i].dano * tiempo;
-                    if (plantas[j].vida <= 0) {
+        if (zombieVivo(i)) { //ve que el zombie este vivo
+            for (int j = 0; j < CANT_PLANTAS; j++) { 
+
+                //Ve que la planta este activa, en la misma fila  y que el zombie este en contacto con ella
+                if (plantas[j].activa == 1 && plantas[j].fila == zombis[i].fila &&
+                    plantas[j].columna * ANCHO_CELDA < zombis[i].x && plantas[j].columna * ANCHO_CELDA + ANCHO_CELDA > zombis[i].x - 17) {
+                    plantas[j].vida -= zombis[i].dano * tiempo; //resta vida a la planta segun el daño del zombie y el tiempo transcurrido
+                    if (plantas[j].vida <= 0) { //ve si se quedo sin vida
                         plantas[j].vida = 0;
-                        plantas[j].activa = 0;
+                        plantas[j].activa = 0; //desactiva la planta si esta murio
                     }
-                    break;
+                    break; //zombie deja de buscar plantas
                 }
             }
         }
@@ -497,7 +496,7 @@ void iniciarOleada(void) {
             zombisRestantes - zombisFlagPendientes;
     }
 
-    temporizadorOleada = 0;
+    temporizadorOleada = 0; //reinicia el tiempo de la oleada
 }
 
 
@@ -506,7 +505,7 @@ int generarZombi(void) {
 
     for (int i = 0; i < CANT_ZOMBIS; i++) {
 
-        if (!zombieVivo(i)) {
+        if (!zombieVivo(i)) { //busca un espacio disponible 
 
             int fila;
             int espacioDisponible = 0;
@@ -515,10 +514,10 @@ int generarZombi(void) {
             // Buscar una fila donde haya espacio para aparecer
             for (int intento = 0; intento < 20; intento++) {
 
-                fila = rand() % FILAS;
+                fila = rand() % FILAS; //selecciona una fila aleatoria
                 espacioDisponible = 1;
 
-                for (int j = 0; j < CANT_ZOMBIS; j++) {
+                for (int j = 0; j < CANT_ZOMBIS; j++) { //ve si hay otro zombie cerca de esa posicion
 
                     if (zombieVivo(j) && zombis[j].fila == fila) {
 
@@ -529,15 +528,15 @@ int generarZombi(void) {
                     }
                 }
 
-                if (espacioDisponible) {
+                if (espacioDisponible) { //si hay espacio termina la busqueda
                     break;
                 }
             }
 
-            if (!espacioDisponible) {
+            if (!espacioDisponible) { //si no hay espacio, no genera el zombi
                 return 0;
             }
-
+            //asigna la fila y posicion al zombi
             zombis[i].fila = fila;
             zombis[i].x = posicionX;
 
@@ -545,50 +544,43 @@ int generarZombi(void) {
             int cantidadEspeciales =
                 zombisFlagPendientes + zombisSinCabezaPendientes;
 
-            // Decidir el tipo de zombi
-            int seleccion = rand() % zombisRestantes;
+            int seleccion = rand() % zombisRestantes; //elige al azar un tipo de zombie 
 
-            if (seleccion < zombisFlagPendientes) {
-
+            if (seleccion < zombisFlagPendientes) { //ve si corresponde generar un zombie bandera
                 zombis[i].tipo = ZOMBI_FLAG;
                 zombisFlagPendientes--;
 
             }
-            else if (seleccion < cantidadEspeciales) {
-
+            else if (seleccion < cantidadEspeciales) { //ve si corresponde generar un zombie sin cabeza
                 zombis[i].tipo = ZOMBI_SIN_CABEZA;
                 zombisSinCabezaPendientes--;
 
             }
-            else {
-
+            else { //si no es ninguno de los otros dos, genera uno normal 
                 zombis[i].tipo = ZOMBI_NORMAL;
             }
 
-            // Asignar estadísticas según su tipo
+            // Asigna la vida y el daño según el tipo de zombi
             if (zombis[i].tipo == ZOMBI_FLAG) {
-
                 zombis[i].vida = VIDA_ZOMBI_FLAG;
                 zombis[i].dano = DANO_ZOMBI_FLAG;
 
             }
             else if (zombis[i].tipo == ZOMBI_SIN_CABEZA) {
-
                 zombis[i].vida = VIDA_ZOMBI_SIN_CABEZA;
                 zombis[i].dano = DANO_ZOMBI_SIN_CABEZA;
 
             }
             else {
-
                 zombis[i].vida = VIDA_ZOMBI_NORMAL;
                 zombis[i].dano = DANO_ZOMBI_NORMAL;
             }
 
-            return 1;
+            return 1; //indica que el zombie se genero correctamente
         }
     }
 
-    return 0;
+    return 0; //indica que no se pudo generar el zombie 
 }
 
 
@@ -596,17 +588,15 @@ int generarZombi(void) {
 
 
 void actualizarOleadas(float tiempo) {
-
-    // Todavia quedan zombis por generar
-    if (zombisRestantes > 0) {
+    if (zombisRestantes > 0) { //ve si todavia quedan zombies por generar
 
         temporizadorOleada += tiempo;
 
-        if (temporizadorOleada >= TIEMPO_ENTRE_ZOMBIS) {
+        if (temporizadorOleada >= TIEMPO_ENTRE_ZOMBIS) { //ve si ya paso el tiempo entre la aparicion de zombies 
 
-            if (generarZombi()) {
+            if (generarZombi()) { //intenta generar un zombi
                 zombisRestantes--;
-                temporizadorOleada = 0;
+                temporizadorOleada = 0; //reinicia el temporizador 
             }
         }
     }
@@ -616,8 +606,7 @@ void actualizarOleadas(float tiempo) {
 
         int zombisVivos = 0;
 
-        // Contamos cuántos zombis siguen vivos
-        for (int i = 0; i < CANT_ZOMBIS; i++) {
+        for (int i = 0; i < CANT_ZOMBIS; i++) { //cuenta cuantos zombies estan vivos
 
             if (zombieVivo(i)) {
                 zombisVivos++;
@@ -637,12 +626,11 @@ void actualizarOleadas(float tiempo) {
                     return;
                 }
 
-                // Iniciamos la siguiente oleada
-                oleadaActual++;
+                oleadaActual++;//aumenta el numero de oleada y la inicia
 
                 iniciarOleada();
 
-                temporizadorEntreOleadas = 0;
+                temporizadorEntreOleadas = 0; //reincia el temporizador entre oleadas
             }
         }
     }
@@ -660,9 +648,9 @@ void inicializarCortacespedes(void) {
 // se activa cuando un zombi vivo de su fila llega al borde del jardín
 void activarCortacespedes(void) {
     for (int f = 0; f < FILAS; f++) {
-        if (!cortacespedes[f].disponible) continue;
-        for (int j = 0; j < CANT_ZOMBIS; j++) {
-            if (zombieVivo(j) && zombis[j].fila == f && zombis[j].x <= 0) {
+        if (!cortacespedes[f].disponible) continue;//si el cortacesped ya no esta disponible, pasa a la siguiente fila
+        for (int j = 0; j < CANT_ZOMBIS; j++) { //ve si un zombie vivo de esa fila llego al borde del jardin
+            if (zombieVivo(j) && zombis[j].fila == f && zombis[j].x <= 0) { 
                 cortacespedes[f].disponible = 0;
                 cortacespedes[f].activo = 1;
                 break;
@@ -675,7 +663,7 @@ void activarCortacespedes(void) {
 void actualizarCortacespedes(float tiempo) {
     for (int i = 0; i < FILAS; i++) {
 
-        if (cortacespedes[i].activo == 1) {
+        if (cortacespedes[i].activo == 1) { //ve si el cortacesped esta activo
 
             // Elimina los zombis que encuentra en su fila
             for (int j = 0; j < CANT_ZOMBIS; j++) {
@@ -683,16 +671,15 @@ void actualizarCortacespedes(float tiempo) {
                     zombis[j].fila == i &&
                     zombis[j].x <= cortacespedes[i].x + ANCHO_CELDA) {
 
-                    zombis[j].vida = 0;
+                    zombis[j].vida = 0; //elimina al zombie que toca el cortacesped
                 }
             }
 
-            // Avanza el cortacesped
-            cortacespedes[i].x += 450 * tiempo;
+            cortacespedes[i].x += 450 * tiempo; // Avanza el cortacesped hacia la derecha
 
             // Comprueba si salio del jardin
             if (cortacespedes[i].x > ANCHO_JARDIN) {
-                cortacespedes[i].activo = 0;
+                cortacespedes[i].activo = 0; //se desactiva
             }
         }
     }
@@ -700,15 +687,15 @@ void actualizarCortacespedes(float tiempo) {
 
 void comprobarDerrota(void) {
     for (int i = 0; i < CANT_ZOMBIS; i++) {
-        if (zombieVivo(i) && zombis[i].x <= 0) {
+        if (zombieVivo(i) && zombis[i].x <= 0) { //Ve si el zombie esta vivo y llego al borde del jardin
 
             int fila = zombis[i].fila;
 
-            if (fila >= 0 && fila < FILAS &&
-                cortacespedes[fila].disponible == 0 &&
+             // Ve que la fila sea valida y que su cortacesped no se este activo
+            if (fila >= 0 && fila < FILAS && cortacespedes[fila].disponible == 0 &&
                 cortacespedes[fila].activo == 0) {
 
-                juegoPerdido = 1;
+                juegoPerdido = 1; //activa la pantalla de derrota
                 break;
             }
         }
