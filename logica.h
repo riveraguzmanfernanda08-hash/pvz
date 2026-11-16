@@ -4,7 +4,7 @@
 #include "config.h"
 #include "raylib.h"
 
-#define CANT_ZOMBIS 50//provisional
+#define CANT_ZOMBIS 65//provisional
 #define CANT_PLANTAS 45 //provisional
 #define CANT_SOLES 10 //provisional 
 #define CANT_PROYECTILES 50 //provisional
