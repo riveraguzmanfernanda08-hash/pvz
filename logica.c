@@ -97,7 +97,6 @@ void inicializarPlantas(void){
         plantas[i].vida= 200;
         plantas[i].dano= 20;
         plantas[i].costoSoles = 0;
-        plantas[i].produccionSoles = 0;
         plantas[i].cooldown=0;
         plantas[i].temporizador = 0;
         plantas[i].activa= 0; //todavia no esta colocada
@@ -161,28 +160,24 @@ int colocarPlanta(int fila, int columna, int tipo) { //coloca una planta en la f
                 plantas[i].vida = VIDA_GUISANTE;
                 plantas[i].dano = DANO_GUISANTE;
                 plantas[i].costoSoles = COSTO_GUISANTE;
-                plantas[i].produccionSoles = PRODUCCION_GUISANTE;
                 plantas[i].cooldown = COOLDOWN_GUISANTE;
             }
             else if (tipo == TIPO_GIRASOL) {
                 plantas[i].vida = VIDA_GIRASOL;
                 plantas[i].dano = DANO_GIRASOL;
                 plantas[i].costoSoles = COSTO_GIRASOL;
-                plantas[i].produccionSoles = PRODUCCION_GIRASOL;
                 plantas[i].cooldown = COOLDOWN_GIRASOL;
             }
             else if (tipo == TIPO_NUEZ) {
                 plantas[i].vida = VIDA_NUEZ;
                 plantas[i].dano = DANO_NUEZ;
                 plantas[i].costoSoles = COSTO_NUEZ;
-                plantas[i].produccionSoles = PRODUCCION_NUEZ;
                 plantas[i].cooldown = 0;
             }
             else if (tipo == TIPO_CACTUS) {
                 plantas[i].vida = VIDA_CACTUS;
                 plantas[i].dano = DANO_CACTUS;
                 plantas[i].costoSoles = COSTO_CACTUS;
-                plantas[i].produccionSoles = PRODUCCION_CACTUS;
                 plantas[i].cooldown = COOLDOWN_CACTUS;
             }
 
@@ -500,7 +495,6 @@ void iniciarOleada(void) {
 }
 
 
-
 int generarZombi(void) {
 
     for (int i = 0; i < CANT_ZOMBIS; i++) {
@@ -582,9 +576,6 @@ int generarZombi(void) {
 
     return 0; //indica que no se pudo generar el zombie 
 }
-
-
-
 
 
 void actualizarOleadas(float tiempo) {
@@ -675,7 +666,7 @@ void actualizarCortacespedes(float tiempo) {
                 }
             }
 
-            cortacespedes[i].x += 450 * tiempo; // Avanza el cortacesped hacia la derecha
+            cortacespedes[i].x += VEL_CORTACESPED * tiempo; // Avanza el cortacesped hacia la derecha
 
             // Comprueba si salio del jardin
             if (cortacespedes[i].x > ANCHO_JARDIN) {
