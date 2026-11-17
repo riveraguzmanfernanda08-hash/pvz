@@ -72,8 +72,6 @@ void liberarZombieFlag(void) {
     UnloadTexture(zombieFlag);
 }
 
-
-
 void cargarZombieSinCabeza(void) {
     zombieSinCabeza = LoadTexture("assets/zombie_sin_cabeza.png");
     SetTextureFilter(zombieSinCabeza, TEXTURE_FILTER_POINT);
@@ -157,7 +155,7 @@ void dibujarJardin() {
 
 void dibujarCasa(void) {
 
-    Rectangle destino = {     // Define la posicion y el tamaño de destino de la imagen
+    Rectangle destino = {  // Define la posicion y el tamaño de destino de la imagen
         0,
         ALTO_MENU,
         ANCHO_IMG_CASA,
