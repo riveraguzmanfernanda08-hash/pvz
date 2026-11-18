@@ -1,13 +1,12 @@
-#ifndef LOGICA_H
-#define LOGICA_H
+#pragma once
 
-#include "config.h"
+#include "constantes.h"
 #include "raylib.h"
 
-#define CANT_ZOMBIS 65//provisional
-#define CANT_PLANTAS 45 //provisional
-#define CANT_SOLES 10 //provisional 
-#define CANT_PROYECTILES 50 //provisional
+#define CANT_ZOMBIS 65
+#define CANT_PLANTAS 45
+#define CANT_SOLES 10
+#define CANT_PROYECTILES 50
 
 
 typedef struct {
@@ -16,6 +15,7 @@ typedef struct {
     int vida;
     int dano;
     int tipo;
+    int velocidad;
 } Zombi;
 
 typedef struct {
@@ -125,9 +125,3 @@ void activarCortacespedes(void);
 void actualizarCortacespedes(float tiempo);
 
 void comprobarDerrota(void);
-
-
-
-
-#endif
-

@@ -37,7 +37,7 @@ void reiniciarPartida(void) {
 
 
 int main(void) {
-
+    inicializarConfiguracion();
     iniciarVentana();   //Inicializar la ventana 
     InitAudioDevice(); //Inicializar audio
 
@@ -101,12 +101,12 @@ int main(void) {
                 seleccionarPlanta(GetMouseX(), GetMouseY()); // Seleccionar planta o pala
 
                 // Comprobar si el clic fue dentro del jardín
-                if (mousePos.x >= ANCHO_CASA && mousePos.x < ANCHO_CASA + ANCHO_JARDIN &&
-                    mousePos.y >= ALTO_MENU && mousePos.y < ALTO_MENU + ALTO_JARDIN) {
+                if (mousePos.x >= configuracion_juego.ancho_casa && mousePos.x < configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin &&
+                    mousePos.y >= configuracion_juego.alto_menu && mousePos.y < configuracion_juego.alto_menu + configuracion_juego.alto_jardin) {
                     
                         // Calcular la fila y columna donde se hizo clic
-                    int fila = (mousePos.y - ALTO_MENU) / ALTO_CELDA;
-                    int columna = (mousePos.x - ANCHO_CASA) / ANCHO_CELDA;
+                    int fila = (mousePos.y - configuracion_juego.alto_menu) / configuracion_juego.alto_celda;
+                    int columna = (mousePos.x - configuracion_juego.ancho_casa) / configuracion_juego.ancho_celda;
 
                     // Si está seleccionada la pala
                     if (palaSeleccionada == 1) {
@@ -135,7 +135,7 @@ int main(void) {
                 Vector2 mousePos = GetMousePosition(); //Obtener la posicion del mouse
 
                 Rectangle boton = { //Posicion y tamaño del boton
-                    (ANCHO_CASA + ANCHO_JARDIN - 240) / 2, 380,240,60 };
+                    (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - 240) / 2, 380,240,60 };
 
                 if (CheckCollisionPointRec(mousePos, boton)) { //Ver si el clic fue en el boton
                     reiniciarPartida();
@@ -167,8 +167,8 @@ int main(void) {
             if (zombieVivo(i)) { //Ver si el zombie sigue vivo
 
                 //Calcular la posicion del zombie 
-                int xZombie = (int)(ANCHO_CASA + zombis[i].x);
-                int yZombie = ALTO_MENU + zombis[i].fila * ALTO_CELDA;
+                int xZombie = (int)(configuracion_juego.ancho_casa + zombis[i].x);
+                int yZombie = configuracion_juego.alto_menu + zombis[i].fila * configuracion_juego.alto_celda;
 
                 // Comprobar el tipo de zombi
                 if (zombis[i].tipo == ZOMBI_NORMAL) {
@@ -192,14 +192,14 @@ int main(void) {
 
             DrawRectangle( //Oscurece la pantalla
                 0, 0,
-                ANCHO_CASA + ANCHO_JARDIN,
-                ALTO_MENU + ALTO_JARDIN,
+                configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
+                configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
                 Fade(BLACK, 0.65f)
             );
 
             DrawText( //Mostar el mensaje
                 "GAME OVER",
-                (ANCHO_CASA + ANCHO_JARDIN - MeasureText("GAME OVER", 60)) / 2,
+                (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("GAME OVER", 60)) / 2,
                 300,
                 60,
                 RED
@@ -212,14 +212,14 @@ int main(void) {
 
             DrawRectangle( //Oscurece la pantalla
                 0, 0,
-                ANCHO_CASA + ANCHO_JARDIN,
-                ALTO_MENU + ALTO_JARDIN,
+                configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
+                configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
                 Fade(BLACK, 0.65f)
             );
 
             DrawText( //Muestra el mensaje
                 "¡VICTORIA!",
-                (ANCHO_CASA + ANCHO_JARDIN - MeasureText("¡VICTORIA!", 60)) / 2,
+                (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("¡VICTORIA!", 60)) / 2,
                 270,
                 60,
                 GOLD
@@ -227,7 +227,7 @@ int main(void) {
 
             DrawText( //Muestra el mensaje
                 "Has protegido tu casa",
-                (ANCHO_CASA + ANCHO_JARDIN - MeasureText("Has protegido tu casa", 25)) / 2,
+                (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("Has protegido tu casa", 25)) / 2,
                 340,
                 25,
                 WHITE
@@ -239,7 +239,7 @@ int main(void) {
         if (juegoPerdido == 1 || juegoGanado == 1) { //Mostar cuando la partida termine
 
             Rectangle boton = { //Posicion y tamaño del boton
-                (ANCHO_CASA + ANCHO_JARDIN - 240) / 2,
+                (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - 240) / 2,
                 380,
                 240,
                 60

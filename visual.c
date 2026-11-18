@@ -19,8 +19,8 @@ Texture2D lanzaguisantes;
 
 void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
     InitWindow(
-        ANCHO_CASA + ANCHO_JARDIN,
-        ALTO_MENU + FILAS * ALTO_CELDA,
+        configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
+        configuracion_juego.alto_menu + FILAS * configuracion_juego.alto_celda,
         "Plants vs zombies"
     );
 
@@ -114,8 +114,8 @@ void dibujarJardin() {
 
     DrawRectangle(     // Dibuja la parte  donde esta el menu
         0, 0,
-        ANCHO_CASA + ANCHO_JARDIN,
-        ALTO_MENU,
+        configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
+        configuracion_juego.alto_menu,
         BROWN
     );
 
@@ -123,8 +123,8 @@ void dibujarJardin() {
 
         for (int j = 0; j < COLUMNAS; j++) {
             // Calcula la posicion de cada casilla
-            int x = ANCHO_CASA + j * ANCHO_CELDA;
-            int y = ALTO_MENU + i * ALTO_CELDA;
+            int x = configuracion_juego.ancho_casa + j * configuracion_juego.ancho_celda;
+            int y = configuracion_juego.alto_menu + i * configuracion_juego.alto_celda;
 
             Color color;
 
@@ -137,15 +137,15 @@ void dibujarJardin() {
 
             DrawRectangle( // Dibuja cada casilla 
                 x, y,
-                ANCHO_CELDA,
-                ALTO_CELDA,
+                configuracion_juego.ancho_celda,
+                configuracion_juego.alto_celda,
                 color
             );
 
             DrawRectangleLines( //Dibuja el borde de cada casilla 
                 x, y,
-                ANCHO_CELDA,
-                ALTO_CELDA,
+                configuracion_juego.ancho_celda,
+                configuracion_juego.alto_celda,
                 BLACK
             );
         }
@@ -157,9 +157,9 @@ void dibujarCasa(void) {
 
     Rectangle destino = {  // Define la posicion y el tamaño de destino de la imagen
         0,
-        ALTO_MENU,
-        ANCHO_IMG_CASA,
-        ALTO_JARDIN
+        configuracion_juego.alto_menu,
+        configuracion_juego.ancho_img_casa,
+        configuracion_juego.alto_jardin
     };
 
     Rectangle origen = {
@@ -181,7 +181,7 @@ void dibujarCasa(void) {
 
 void dibujarCortacespedes(void) {
 
-    float alto = ALTO_CORTACESPED;
+    float alto = configuracion_juego.alto_cortacesped;
     float ancho = alto * cortacesped.width / cortacesped.height;
 
     for (int i = 0; i < FILAS; i++) {
@@ -191,8 +191,8 @@ void dibujarCortacespedes(void) {
         }
 
         Rectangle destino = { //Define posicion y tamaño del cortacesped
-            ANCHO_CASA + cortacespedes[i].x,
-            ALTO_MENU + i * ALTO_CELDA + (ALTO_CELDA - alto) / 2,
+            configuracion_juego.ancho_casa + cortacespedes[i].x,
+            configuracion_juego.alto_menu + i * configuracion_juego.alto_celda + (configuracion_juego.alto_celda - alto) / 2,
             ancho,
             alto
         };
@@ -219,10 +219,10 @@ void dibujarCortacespedes(void) {
 void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 
     DrawRectangle(
-        ANCHO_IMG_CASA,
-        ALTO_MENU,
-        ANCHO_CARRIL,
-        ALTO_JARDIN,
+        configuracion_juego.ancho_img_casa,
+        configuracion_juego.alto_menu,
+        configuracion_juego.ancho_carril,
+        configuracion_juego.alto_jardin,
         BEIGE
     );
 
@@ -230,20 +230,20 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
     for (int i = 0; i <= FILAS; i++) {
 
         DrawLine(
-            ANCHO_IMG_CASA,
-            ALTO_MENU + i * ALTO_CELDA,
-            ANCHO_CASA,
-            ALTO_MENU + i * ALTO_CELDA,
+            configuracion_juego.ancho_img_casa,
+            configuracion_juego.alto_menu + i * configuracion_juego.alto_celda,
+            configuracion_juego.ancho_casa,
+            configuracion_juego.alto_menu + i * configuracion_juego.alto_celda,
             (Color){70, 70, 75, 255}
         );
     }
 
     // Borde del lado del jardin
     DrawLine(
-        ANCHO_CASA,
-        ALTO_MENU,
-        ANCHO_CASA,
-        ALTO_MENU + ALTO_JARDIN,
+        configuracion_juego.ancho_casa,
+        configuracion_juego.alto_menu,
+        configuracion_juego.ancho_casa,
+        configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
         BLACK
     );
 }
@@ -251,7 +251,7 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 
 
 void dibujarMenu(void) {
-    DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN); //Fondo del menu
+    DrawRectangle(0, 0, 1000, configuracion_juego.alto_menu, BROWN); //Fondo del menu
 
     DrawCircle(42, 47, 20, GOLD); // Mostrar cantidad de soles
     //Convierte los soles a texto
@@ -453,8 +453,8 @@ void dibujarPlantas(void) {
 
         if (plantas[i].activa == 1) {
             //Calcula la posicion de la planta segun su fila y columna
-            int x = ANCHO_CASA + plantas[i].columna * ANCHO_CELDA;
-            int y = ALTO_MENU + plantas[i].fila * ALTO_CELDA;
+            int x = configuracion_juego.ancho_casa + plantas[i].columna * configuracion_juego.ancho_celda;
+            int y = configuracion_juego.alto_menu + plantas[i].fila * configuracion_juego.alto_celda;
 
             // Posicion y tamaño de las plantas
             Rectangle destino = {
@@ -548,7 +548,7 @@ void dibujarSoles(void) {
 
         if (soles[i].activo == 1) { //Ve si esta activo
             //Se obtiene la posicion del sol
-            int x = ANCHO_CASA + (int)soles[i].x;
+            int x = configuracion_juego.ancho_casa + (int)soles[i].x;
             int y = (int)soles[i].y;
 
             DrawCircle(x, y, 18, GOLD);
@@ -565,7 +565,7 @@ void dibujarProyectiles(void) {
         if (proyectiles[i].activo == 1) { //Ve si esta activo
 
             DrawCircle(
-                ANCHO_CASA + (int)proyectiles[i].x,
+                configuracion_juego.ancho_casa + (int)proyectiles[i].x,
                 (int)proyectiles[i].y,
                 7,
                 LIME
