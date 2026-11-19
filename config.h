@@ -1,6 +1,43 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+typedef struct {
+    int ancho_celda;
+    int alto_celda;
+    int alto_menu;
+    int ancho_jardin;
+    int alto_jardin;
+    int ancho_img_casa;
+    int ancho_carril;
+    int ancho_casa;
+    int alto_cortacesped;
+    int posicion_cortacesped;
+    int vel_cortacesped;
+    int radio_sol;
+    float cooldown_sol;
+} ConfiguracionJuego;
+
+typedef struct {
+    int vida;
+    int dano;
+    float velocidad;
+} TipoZombi;
+
+typedef struct {
+    int vida;
+    int dano;
+    int costo;
+    int produccion;
+    float cooldown;
+} TipoPlanta;
+
+typedef struct {
+    int zombis_por_oleada;
+    float tiempo_entre_zombis;
+    float tiempo_entre_oleadas;
+    int max_oleadas;
+} ConfiguracionOleada;
+
 #define FILAS 5
 #define COLUMNAS 9
 
@@ -10,6 +47,9 @@
 
 #define ANCHO_JARDIN (COLUMNAS * ANCHO_CELDA)
 #define ALTO_JARDIN (FILAS * ALTO_CELDA)
+
+#define NUM_TIPOS_ZOMBI 3
+#define NUM_TIPOS_PLANTA 4
 
 #define ZOMBI_NORMAL 0
 #define ZOMBI_FLAG 1

@@ -46,7 +46,7 @@ int main(void) {
     SetMusicVolume(musicaFondo, 0.4f);
     PlayMusicStream(musicaFondo);
 
-    //Cargar imágenes
+    cargarJardin();
     cargarCasa();
     cargarPlantas();
     cargarCortacesped();
@@ -262,6 +262,7 @@ int main(void) {
 
 
     // LIBERAR RECURSOS
+    liberarJardin();
     liberarCasa();
     liberarPlantas();
     liberarCortacesped();

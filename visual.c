@@ -4,6 +4,7 @@
 #include "logica.h"
 #include <stdio.h>
 
+Texture2D jardin;
 Texture2D casa;
 Texture2D cortacesped;
 Texture2D zombieFlag;
@@ -15,6 +16,7 @@ Texture2D girasol;
 Texture2D nuez;
 Texture2D cactus;
 Texture2D lanzaguisantes;
+Texture2D sol;
 
 
 void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
@@ -31,6 +33,16 @@ void cerrarVentana() { //cierra ventana
     CloseWindow();
 }
 
+
+// para que cargue el pasto
+void cargarJardin(void) {
+    jardin = LoadTexture("assets/pastito_solo_pasto.png");
+    SetTextureFilter(jardin, TEXTURE_FILTER_BILINEAR);
+}
+
+void liberarJardin(void) {
+    UnloadTexture(jardin);
+}
 
 void cargarCasa(void) {
     casa = LoadTexture("assets/casa.png");
@@ -96,11 +108,13 @@ void cargarPlantas(void) {
     nuez= LoadTexture("assets/nuez.png");
     cactus= LoadTexture("assets/cactus.png");
     lanzaguisantes= LoadTexture("assets/lanzaguisantes.png");
+    sol = LoadTexture("assets/Sun.png");
 
     SetTextureFilter(girasol, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(nuez, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(cactus, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(lanzaguisantes, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(sol, TEXTURE_FILTER_BILINEAR);
 }
 
 void liberarPlantas(void) {
@@ -108,50 +122,24 @@ void liberarPlantas(void) {
     UnloadTexture(nuez);
     UnloadTexture(cactus);
     UnloadTexture(lanzaguisantes);
+    UnloadTexture(sol);
 }
 
+
+//tamaño de la imagen del jardin
 void dibujarJardin() {
 
-    DrawRectangle(     // Dibuja la parte  donde esta el menu
-        0, 0,
-        ANCHO_CASA + ANCHO_JARDIN,
-        ALTO_MENU,
-        BROWN
+    DrawRectangle(0, 0, ANCHO_CASA + ANCHO_JARDIN, ALTO_MENU, BROWN);
+
+    DrawTexturePro(
+        jardin,
+        (Rectangle){0, 0, jardin.width, jardin.height},
+        (Rectangle){ANCHO_CASA, ALTO_MENU, ANCHO_JARDIN, ALTO_JARDIN},
+        (Vector2){0, 0},
+        0,
+        WHITE
     );
-
-    for (int i = 0; i < FILAS; i++) {
-
-        for (int j = 0; j < COLUMNAS; j++) {
-            // Calcula la posicion de cada casilla
-            int x = ANCHO_CASA + j * ANCHO_CELDA;
-            int y = ALTO_MENU + i * ALTO_CELDA;
-
-            Color color;
-
-            // Alternar colores de las casillas
-            if ((i + j) % 2 == 0) {
-                color = GREEN;
-            } else {
-                color = DARKGREEN;
-            }
-
-            DrawRectangle( // Dibuja cada casilla 
-                x, y,
-                ANCHO_CELDA,
-                ALTO_CELDA,
-                color
-            );
-
-            DrawRectangleLines( //Dibuja el borde de cada casilla 
-                x, y,
-                ANCHO_CELDA,
-                ALTO_CELDA,
-                BLACK
-            );
-        }
-    }
 }
-
 
 void dibujarCasa(void) {
 
@@ -251,13 +239,16 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 
 
 void dibujarMenu(void) {
-    DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN); //Fondo del menu
+DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN); //fondo del menu
+// coloca la imagen de sol
+Rectangle origenSol = { 0.0f, 0.0f, (float)sol.width, (float)sol.height };
+Rectangle destinoSol = { 42.0f - 20.0f, 47.0f - 20.0f, 40.0f, 40.0f };
+DrawTexturePro(sol, origenSol, destinoSol, (Vector2){ 0.0f, 0.0f }, 0.0f, WHITE);
 
-    DrawCircle(42, 47, 20, GOLD); // Mostrar cantidad de soles
-    //Convierte los soles a texto
-    char textoSoles[20];
-    sprintf(textoSoles, "%d", solesJugador);
-    DrawText(textoSoles, 70, 35, 25, DARKBROWN);
+//convierte los soles a texto
+char textoSoles[20];
+sprintf(textoSoles, "%d", solesJugador);
+DrawText(textoSoles, 70, 35, 25, DARKBROWN);
 
     // TARJETA DEL GUISANTE
     DrawRectangle(150, 10, 110, 80, BEIGE);
@@ -543,16 +534,13 @@ void dibujarPlantas(void) {
 
 
 void dibujarSoles(void) {
-
-    for (int i = 0; i < CANT_SOLES; i++) { //Recorre todos los soles
-
-        if (soles[i].activo == 1) { //Ve si esta activo
-            //Se obtiene la posicion del sol
+    for (int i = 0; i < CANT_SOLES; i++) { // Recorre todos los soles
+        if (soles[i].activo == 1) { // Ve si esta activo
+            // Se obtiene la posicion del sol
             int x = ANCHO_CASA + (int)soles[i].x;
             int y = (int)soles[i].y;
 
-            DrawCircle(x, y, 18, GOLD);
-            DrawCircle(x, y, 12, YELLOW);
+            DrawTexture(sol, x - sol.width / 2, y - sol.height / 2, WHITE);
         }
     }
 }

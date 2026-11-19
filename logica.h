@@ -15,6 +15,7 @@ typedef struct {
     float x;
     int vida;
     int dano;
+    float velocidad;
     int tipo;
 } Zombi;
 
