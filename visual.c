@@ -18,6 +18,9 @@ Texture2D cactus;
 Texture2D lanzaguisantes;
 Texture2D sol;
 
+Texture2D cardGuisante;
+Texture2D cardGirasol;
+Texture2D cardNuez;
 
 void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
     InitWindow(
@@ -110,11 +113,19 @@ void cargarPlantas(void) {
     lanzaguisantes= LoadTexture("assets/lanzaguisantes.png");
     sol = LoadTexture("assets/Sun.png");
 
+    cardGuisante = LoadTexture("assets/peashooterCard.png");
+    cardGirasol  = LoadTexture("assets/sunflowerCard.png");
+    cardNuez     = LoadTexture("assets/wallnutCard.png");
+
     SetTextureFilter(girasol, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(nuez, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(cactus, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(lanzaguisantes, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(sol, TEXTURE_FILTER_BILINEAR);
+
+    SetTextureFilter(cardGuisante, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(cardGirasol, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(cardNuez, TEXTURE_FILTER_BILINEAR);
 }
 
 void liberarPlantas(void) {
@@ -123,6 +134,9 @@ void liberarPlantas(void) {
     UnloadTexture(cactus);
     UnloadTexture(lanzaguisantes);
     UnloadTexture(sol);
+    UnloadTexture(cardGuisante);
+    UnloadTexture(cardGirasol);
+    UnloadTexture(cardNuez);
 }
 
 
@@ -237,7 +251,7 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 }
 
 
-
+// carga el menu de arriba (para seleccionar plantas, pala)
 void dibujarMenu(void) {
 DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN); //fondo del menu
 // coloca la imagen de sol
@@ -251,61 +265,44 @@ sprintf(textoSoles, "%d", solesJugador);
 DrawText(textoSoles, 70, 35, 25, DARKBROWN);
 
     // TARJETA DEL GUISANTE
-    DrawRectangle(150, 10, 110, 80, BEIGE);
-    DrawText("Guisante", 160, 20, 15, DARKGREEN);
-    DrawText("100", 190, 65, 20, BLACK);
-
     DrawTexturePro(
-        lanzaguisantes,
-        (Rectangle){0, 0, lanzaguisantes.width, lanzaguisantes.height},
-        (Rectangle){190, 35, 45, 30},
+        cardGuisante,
+        (Rectangle){0, 0, (float)cardGuisante.width, (float)cardGuisante.height},
+        (Rectangle){150, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_GUISANTE) {
         DrawRectangleLinesEx((Rectangle){150, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(150, 10, 110, 80, BLACK);
     }
 
-
     // TARJETA DEL GIRASOL
-    DrawRectangle(270, 10, 110, 80, BEIGE);
-    DrawText("Girasol", 280, 20, 15, DARKGREEN);
-    DrawText("50", 315, 65, 20, BLACK);
-
     DrawTexturePro(
-        girasol,
-        (Rectangle){0, 0, girasol.width, girasol.height},
-        (Rectangle){310, 35, 45, 30},
+        cardGirasol,
+        (Rectangle){0, 0, (float)cardGirasol.width, (float)cardGirasol.height},
+        (Rectangle){270, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_GIRASOL) {
         DrawRectangleLinesEx((Rectangle){270, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(270, 10, 110, 80, BLACK);
     }
 
-
     // TARJETA DE LA NUEZ
-    DrawRectangle(390, 10, 110, 80, BEIGE);
-    DrawText("Nuez", 400, 20, 15, DARKGREEN);
-    DrawText("50", 435, 65, 20, BLACK);
-
     DrawTexturePro(
-        nuez,
-        (Rectangle){0, 0, nuez.width, nuez.height},
-        (Rectangle){430, 35, 45, 30},
+        cardNuez,
+        (Rectangle){0, 0, (float)cardNuez.width, (float)cardNuez.height},
+        (Rectangle){390, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_NUEZ) {
         DrawRectangleLinesEx((Rectangle){390, 10, 110, 80}, 4, GOLD);
     } else {
@@ -333,34 +330,20 @@ DrawText(textoSoles, 70, 35, 25, DARKBROWN);
     }
 
     // TARJETA DE LA PALA
-    DrawRectangle(630, 10, 110, 80, BEIGE);
-    DrawText("Pala", 640, 18, 15, DARKGREEN);
-
-    Rectangle origen = {
-        0, 0,
-        (float)pala.width,
-        (float)pala.height
-    };
-
-    Rectangle destino = {
-        668, 25,
-        60, 60
-    };
-
     DrawTexturePro(
         pala,
-        origen,
-        destino,
+        (Rectangle){0, 0, (float)pala.width, (float)pala.height},
+        (Rectangle){630, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
     if (palaSeleccionada == 1) {
         DrawRectangleLinesEx((Rectangle){630, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(630, 10, 110, 80, BLACK);
     }
+
 }
 
 

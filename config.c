@@ -34,7 +34,7 @@ void inicializarConfiguracion(void) {
         .vida = 325, .dano = 50, .velocidad = 17
     };
     tipos_zombi[ZOMBI_FLAG] = (TipoZombi) {
-        .vida = 325, .dano = 75, .velocidad = 25
+        .vida = 325, .dano = 75, .velocidad = 22
     };
     tipos_zombi[ZOMBI_SIN_CABEZA] = (TipoZombi) {
         .vida = 600, .dano = 100, .velocidad = 9
@@ -57,8 +57,8 @@ void inicializarConfiguracion(void) {
     // --- Oleadas ---
     configuracion_oleada = (ConfiguracionOleada) {
         .zombis_por_oleada = 5,
-        .tiempo_entre_zombis = 3.0f,
-        .tiempo_entre_oleadas = 5.0f,
+        .tiempo_entre_zombis = 300.0f,
+        .tiempo_entre_oleadas = 0.0f,
         .max_oleadas = 5
     };
 }
