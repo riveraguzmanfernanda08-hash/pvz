@@ -18,6 +18,6 @@ cd pvz/
 ## Como ejecutar el programa
 
 ```bash
-gcc *.c -o sorts -lraylib -lGL -lm -lpthread -ldl -lrt -lX11^C
+gcc *.c -o sorts -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 ./sorts
 ```
