@@ -1,4 +1,4 @@
-# Nombre del Proyecto
+# plantas vs. zombies
 
 proyecto semestral del ramo programación de computadores.
 temática: plantas vs. zombies
