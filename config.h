@@ -113,6 +113,9 @@ typedef struct {
 #define X_INI_CORTACESPED  (-72)   
 #define VEL_CORTACESPED    450
 
+
+void inicializarConfiguracion(void);
+
 #endif
 
 
