@@ -9,11 +9,7 @@
 // matriz del jardin
 int **mapa_jardin = NULL;
 
-/*
- * MAPA!!
- * lee el mapa desde un archivo de texto
- * retorna la matriz o NULL si hubo algun error.
- */
+//lee el mapa desde un archivo de texto retorna la matriz o NULL si hubo algun error.
 int **leerMapa(const char *nombreArchivo, int *filas, int *columnas) {
 
     FILE *archivo = fopen(nombreArchivo, "r");
@@ -143,9 +139,6 @@ int generarMapa(const char *nombreArchivo, int filas, int columnas, int porcenta
     return 1;
 }
 
-/*
- *  CONFIGURACION!!
- */
 // quita espacios y saltos de linea al inicio y final de una cadena
 static char *recortar(char *texto) {
     while (*texto == ' ' || *texto == '\t') texto++;
