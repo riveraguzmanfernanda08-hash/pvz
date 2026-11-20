@@ -42,7 +42,7 @@ void inicializarConfiguracion(void) {
 
     // Plantas
     tipos_planta[TIPO_GUISANTE] = (TipoPlanta) {
-        .vida = 300, .dano = 20, .costo = 100, .produccion = 0, .cooldown = 1.5f
+        .vida = 300, .dano = 40, .costo = 100, .produccion = 0, .cooldown = 1.5f
     };
     tipos_planta[TIPO_GIRASOL] = (TipoPlanta) {
         .vida = 300, .dano = 0, .costo = 50, .produccion = 0, .cooldown = 10.0f
@@ -51,13 +51,13 @@ void inicializarConfiguracion(void) {
         .vida = 4000, .dano = 0, .costo = 50, .produccion = 0, .cooldown = 0.0f
     };
     tipos_planta[TIPO_CACTUS] = (TipoPlanta) {
-        .vida = 250, .dano = 25, .costo = 125, .produccion = 0, .cooldown = 1.5f
+        .vida = 250, .dano = 50, .costo = 125, .produccion = 0, .cooldown = 1.5f
     };
 
     //Oleadas
     configuracion_oleada = (ConfiguracionOleada) {
         .zombis_por_oleada = 5,
-        .tiempo_entre_zombis = 3.0f,
+        .tiempo_entre_zombis = 10.0f,
         .tiempo_entre_oleadas = 5.0f,
         .max_oleadas = 5
     };
