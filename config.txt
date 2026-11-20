@@ -18,7 +18,7 @@ zombi_sin_cabeza 600 100 9
 plantas
 guisante 300 20 100 0 1.5
 girasol 300 0 50 0 10.0
-nuez 4000 0 50 0 0.0
+nuez 4000 0 125 0 0.0
 cactus 250 25 125 0 1.5
 
 oleadas
