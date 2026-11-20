@@ -161,7 +161,7 @@ static char *recortar(char *texto) {
 static int indiceZombi(const char *nombre) {
     if (strcmp(nombre, "zombi_normal") == 0)      return ZOMBI_NORMAL;
     if (strcmp(nombre, "zombi_flag") == 0)        return ZOMBI_FLAG;
-    if (strcmp(nombre, "zombi_sin_cabeza") == 0)  return ZOMBI_SIN_CABEZA;
+    if (strcmp(nombre, "zombi_cono") == 0)        return ZOMBI_CONO;
     return -1;
 }
 

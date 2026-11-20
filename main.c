@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
@@ -61,16 +62,19 @@ int main(int argc, char *argv[]) {
     int filas;
     int columnas;
 
-    mapa_jardin = leerMapa(archivoMapa, &filas, &columnas);
+    mapa_jardin = leerMapa(archivoMapa, &filas, &columnas); //carga el mapa desde el archivo indicado
 
-    if (mapa_jardin == NULL) {
+    if (mapa_jardin == NULL) { 
         printf("No se pudo cargar el mapa\n");
         return 1;
     }
+
     filas_jardin = filas;
     columnas_jardin = columnas;
+
     printf("mapa cargado correctamente: %d filas x %d columnas\n", filas, columnas);
-    inicializarConfiguracion();
+
+    inicializarConfiguracion(); // inicializa y carga la configuración del juego
 
     if (!leerConfiguracion(archivoConfig)) {
         printf("Configuracion no valida o ausente: se usan los valores por defecto\n");
@@ -82,11 +86,12 @@ int main(int argc, char *argv[]) {
     iniciarVentana();
     InitAudioDevice();
 
-    // Cargar y reproducir música
+    //cargar y reproducir música
     musicaFondo = LoadMusicStream("assets/musica.wav");
     SetMusicVolume(musicaFondo, 0.4f);
     PlayMusicStream(musicaFondo);
 
+    //carga las imagenes
     cargarJardin();
     cargarLapida();
     cargarCasa();
@@ -94,7 +99,7 @@ int main(int argc, char *argv[]) {
     cargarCortacesped();
     cargarZombieFlag();
     cargarZombieNormal();
-    cargarZombieSinCabeza();
+    cargarZombieCono();
     cargarPala();
     cargarNotasOleadas();
 
@@ -107,7 +112,7 @@ int main(int argc, char *argv[]) {
 
     iniciarOleada();
 
-    while (!WindowShouldClose()) {
+    while (!WindowShouldClose()) { //mantiene el juego funcionando hasta que se cierre la ventana
 
         UpdateMusicStream(musicaFondo);
 
@@ -133,7 +138,7 @@ int main(int argc, char *argv[]) {
             moverProyectiles(tiempo);
             detectarImpactos();
 
-            // DETECTAR CLIC DEL MOUSE
+            // detectar clic del mouse
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 
                 Vector2 mousePos = GetMousePosition();
@@ -143,37 +148,33 @@ int main(int argc, char *argv[]) {
                 seleccionarPlanta(GetMouseX(), GetMouseY());
 
                 // Comprobar si el clic fue dentro del jardín
-                if (mousePos.x >= configuracion_juego.ancho_casa &&
-                    mousePos.x < configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin &&
-                    mousePos.y >= configuracion_juego.alto_menu &&
-                    mousePos.y < configuracion_juego.alto_menu + configuracion_juego.alto_jardin) {
+                if (mousePos.x >= configuracion_juego.ancho_casa && mousePos.x < configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin &&
+                    mousePos.y >= configuracion_juego.alto_menu && mousePos.y < configuracion_juego.alto_menu + configuracion_juego.alto_jardin) {
 
                     // Calcular la fila y columna donde se hizo clic
                     int fila = (mousePos.y - configuracion_juego.alto_menu) / configuracion_juego.alto_celda;
-                int columna = (mousePos.x - configuracion_juego.ancho_casa) / configuracion_juego.ancho_celda;
+                    int columna = (mousePos.x - configuracion_juego.ancho_casa) / configuracion_juego.ancho_celda;
 
-                // Si está seleccionada la pala
-                if (palaSeleccionada == 1) {
+                    // Si está seleccionada la pala
+                    if (palaSeleccionada == 1) {
+                        quitarPlanta(fila, columna);
+                    }
 
-                    quitarPlanta(fila, columna);
+                    // Si está seleccionada una planta
+                    else if (plantaSeleccionada != -1) {
 
-                }
-
-                // Si está seleccionada una planta
-                else if (plantaSeleccionada != -1) {
-
-                    if (colocarPlanta(fila, columna, plantaSeleccionada)) {
-                        plantaSeleccionada = -1;
+                        if (colocarPlanta(fila, columna, plantaSeleccionada)) {
+                            plantaSeleccionada = -1;
+                        }
                     }
                 }
-                    }
             }
         }
 
-        // DETECTAR CLIC EN VOLVER A JUGAR
+        // detectar clic en volver a jugar
         else {
 
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { //ve si se hizo clic dentro del botón de reinicio
 
                 Vector2 mousePos = GetMousePosition();
 
@@ -190,11 +191,11 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        // DIBUJAR EL JUEGO
-        BeginDrawing();
+        BeginDrawing(); //dibuja el juego
 
         ClearBackground(RAYWHITE);
 
+        //dibuja los elementos del juego
         dibujarJardin();
         dibujarCasa();
         dibujarCarril();
@@ -206,73 +207,77 @@ int main(int argc, char *argv[]) {
         dibujarSoles();
         dibujarProyectiles();
 
-        // DIBUJAR ZOMBIS
+        //dibujar zombis
         for (int i = 0; i < CANT_ZOMBIS; i++) {
 
             if (zombieVivo(i)) {
-
+                //calcula la posición del zombi según su fila y coordenada horizontal
                 int xZombie = (int)(configuracion_juego.ancho_casa + zombis[i].x);
                 int yZombie = configuracion_juego.alto_menu + zombis[i].fila * configuracion_juego.alto_celda;
 
+                //dibuja la imagen correspondiente al tipo de zombi
                 if (zombis[i].tipo == ZOMBI_NORMAL) {
                     dibujarZombie(xZombie, yZombie);
                 }
                 else if (zombis[i].tipo == ZOMBI_FLAG) {
                     dibujarZombieFlag(xZombie, yZombie);
                 }
-                else if (zombis[i].tipo == ZOMBI_SIN_CABEZA) {
-                    dibujarZombieSinCabeza(xZombie, yZombie);
+                else if (zombis[i].tipo == ZOMBI_CONO) {
+                    dibujarZombieCono(xZombie, yZombie);
                 }
             }
         }
 
-        // PANTALLA DE DERROTA
+        
+        dibujarOleada();
+
+        //pantalla de derrota
         if (juegoPerdido == 1) {
 
             DrawRectangle(
                 0, 0,
                 configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
                 configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
-                Fade(BLACK, 0.65f)
+                Fade(BLACK, 0.65f) //oscurece la pantalla
             );
 
             DrawText(
                 "GAME OVER",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("GAME OVER", 60)) / 2,
-                     300,
-                     60,
-                     RED
+                300,
+                60,
+                RED
             );
         }
 
-        // PANTALLA DE VICTORIA
+        //pantalla de victoria
         else if (juegoGanado == 1) {
 
             DrawRectangle(
                 0, 0,
                 configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
                 configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
-                Fade(BLACK, 0.65f)
+                Fade(BLACK, 0.65f) //oscurece la pantalla
             );
 
             DrawText(
                 "¡VICTORIA!",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("¡VICTORIA!", 60)) / 2,
-                     270,
-                     60,
-                     GOLD
+                270,
+                60,
+                GOLD
             );
 
             DrawText(
                 "Has protegido tu casa",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("Has protegido tu casa", 25)) / 2,
-                     340,
-                     25,
-                     WHITE
+                340,
+                25,
+                WHITE
             );
         }
 
-        // BOTON VOLVER A JUGAR
+        //boton volver a jugar
         if (juegoPerdido == 1 || juegoGanado == 1) {
 
             Rectangle boton = {
@@ -288,16 +293,16 @@ int main(int argc, char *argv[]) {
             DrawText(
                 "VOLVER A JUGAR",
                 boton.x + (boton.width - MeasureText("VOLVER A JUGAR", 20)) / 2,
-                     boton.y + 20,
-                     20,
-                     WHITE
+                boton.y + 20,
+                20,
+                WHITE
             );
         }
 
         EndDrawing();
     }
 
-    // LIBERAR RECURSOS
+    //libera las imagenes usadas
     liberarJardin();
     liberarLapida();
     liberarCasa();
@@ -305,17 +310,18 @@ int main(int argc, char *argv[]) {
     liberarCortacesped();
     liberarZombieFlag();
     liberarZombieNormal();
-    liberarZombieSinCabeza();
+    liberarZombieCono();
     liberarPala();
     liberarNotasOleadas();
 
-    // Liberar música y audio
+    //libera música y audio
     StopMusicStream(musicaFondo);
     UnloadMusicStream(musicaFondo);
     CloseAudioDevice();
 
     cerrarVentana();
 
+    //libera la memoria utilizada por el mapa
     liberarMapa(mapa_jardin, filas);
     mapa_jardin = NULL;
 

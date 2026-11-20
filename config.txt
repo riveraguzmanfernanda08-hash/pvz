@@ -13,7 +13,8 @@ cooldown_sol 8.0
 zombis
 zombi_normal 325 50 17
 zombi_flag 325 75 22
-zombi_sin_cabeza 600 100 9
+zombi_cono 600 100 9
+
 
 plantas
 guisante 300 20 100 0 1.5
@@ -23,6 +24,6 @@ cactus 250 25 125 0 1.5
 
 oleadas
 zombis_por_oleada 5
-tiempo_entre_zombis 18.0
+tiempo_entre_zombis 6.0
 tiempo_entre_oleadas 5.0
 max_oleadas 5

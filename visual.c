@@ -1,3 +1,4 @@
+
 #include "visual.h"
 #include "raylib.h"
 #include "config.h"
@@ -7,14 +8,13 @@
 #include <math.h>
 #include "lectura.h"
 
-
 Texture2D jardin;
 Texture2D casa;
 Texture2D notasOleadas[5];
 Texture2D cortacesped;
 Texture2D zombieFlag;
 Texture2D zombieNormal;
-Texture2D zombieSinCabeza;
+Texture2D zombieCono;
 Texture2D pala;
 
 Texture2D girasol;
@@ -29,102 +29,122 @@ Texture2D cardGirasol;
 Texture2D cardNuez;
 Texture2D cardCactus;
 
-void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
+
+
+void iniciarVentana() { // Inicializa la ventana del juego usando las dimensiones de la configuración
     InitWindow(
         configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
         configuracion_juego.alto_menu + filas_jardin * configuracion_juego.alto_celda,
-
         "Plants vs zombies"
     );
 
-    MaximizeWindow(); //maximizar ventana 
+    MaximizeWindow(); // Maximiza la ventana del juego
 }
 
-void cerrarVentana() { //cierra ventana
+
+void cerrarVentana() { // Cierra la ventana del juego
     CloseWindow();
 }
 
 
 
-// para que cargue el pasto
-void cargarJardin(void) {
+void cargarJardin(void) { // Carga la imagen del jardín
     jardin = LoadTexture("assets/pastito_solo_pasto.png");
-    SetTextureFilter(jardin, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(jardin, TEXTURE_FILTER_BILINEAR); // Mejora la calidad
 }
 
-void liberarJardin(void) {
+
+void liberarJardin(void) { // Libera la memoria utilizada por el jardín
     UnloadTexture(jardin);
 }
 
-void cargarLapida(void) {
+
+
+void cargarLapida(void) { // Carga la imagen de la lápida
     lapida = LoadTexture("assets/lapida.png");
-    if (lapida.id != 0) SetTextureFilter(lapida, TEXTURE_FILTER_BILINEAR);
+    if (lapida.id != 0) SetTextureFilter(lapida, TEXTURE_FILTER_BILINEAR); // Mejora la calidad
 }
 
+// Libera la memoria utilizada por la lápida
 void liberarLapida(void) {
     if (lapida.id != 0)
         UnloadTexture(lapida);
 }
 
+
+// Carga la imagen de la casa
 void cargarCasa(void) {
     casa = LoadTexture("assets/casa.png");
-    SetTextureFilter(casa, TEXTURE_FILTER_BILINEAR); //mejora la calidad de la textura 
+    SetTextureFilter(casa, TEXTURE_FILTER_BILINEAR);
 }
 
+// Libera la memoria utilizada por la casa
 void liberarCasa(void) {
     UnloadTexture(casa);
 }
 
 
+// Carga la imagen del cortacésped
 void cargarCortacesped(void) {
     cortacesped = LoadTexture("assets/cortacesped.png");
     SetTextureFilter(cortacesped, TEXTURE_FILTER_BILINEAR);
 }
 
+// Libera la memoria utilizada por el cortacésped
 void liberarCortacesped(void) {
     UnloadTexture(cortacesped);
 }
 
 
+// Carga la imagen del zombi normal
 void cargarZombieNormal(void) {
     zombieNormal = LoadTexture("assets/zombie_normal.png");
     SetTextureFilter(zombieNormal, TEXTURE_FILTER_POINT);
-
 }
 
+// Libera la memoria utilizada por el zombi normal
 void liberarZombieNormal(void) {
     UnloadTexture(zombieNormal);
 }
 
 
+// Carga la imagen del zombi bandera
 void cargarZombieFlag(void) {
     zombieFlag = LoadTexture("assets/zombie_flag.png");
     SetTextureFilter(zombieFlag, TEXTURE_FILTER_BILINEAR);
 }
 
+// Libera la memoria utilizada por el zombi bandera
 void liberarZombieFlag(void) {
     UnloadTexture(zombieFlag);
 }
 
-void cargarZombieSinCabeza(void) {
-    zombieSinCabeza = LoadTexture("assets/zombie_sin_cabeza.png");
-    SetTextureFilter(zombieSinCabeza, TEXTURE_FILTER_POINT);
+
+// Carga la imagen del zombi con cono
+void cargarZombieCono(void) {
+    zombieCono = LoadTexture("assets/zombie_cono.png");
+    SetTextureFilter(zombieCono, TEXTURE_FILTER_POINT);
 }
 
-void liberarZombieSinCabeza(void) {
-    UnloadTexture(zombieSinCabeza);
+// Libera la memoria utilizada por el zombi con cono
+void liberarZombieCono(void) {
+    UnloadTexture(zombieCono);
 }
 
 
+// Carga la imagen de la pala
 void cargarPala(void) {
     pala = LoadTexture("assets/pala.png");
     SetTextureFilter(pala, TEXTURE_FILTER_BILINEAR);
 }
 
+// Libera la memoria utilizada por la pala
 void liberarPala(void) {
     UnloadTexture(pala);
 }
 
+
+// Carga las imágenes de las notas
 void cargarNotasOleadas(void) {
 
     notasOleadas[0] = LoadTexture("assets/nota_oleada1.png");
@@ -133,6 +153,7 @@ void cargarNotasOleadas(void) {
     notasOleadas[3] = LoadTexture("assets/nota_oleada4.png");
     notasOleadas[4] = LoadTexture("assets/nota_oleada5.png");
 
+    // Recorre las cinco imágenes para ver si se cargaron bien
     for (int i = 0; i < 5; i++) {
 
         if (notasOleadas[i].id != 0) {
@@ -148,6 +169,7 @@ void cargarNotasOleadas(void) {
     }
 }
 
+// Libera la memoria utilizada por las notas 
 void liberarNotasOleadas(void) {
 
     for (int i = 0; i < 5; i++) {
@@ -158,19 +180,21 @@ void liberarNotasOleadas(void) {
 }
 
 
+// Carga las imágenes de las plantas, los soles y sus tarjetas
 void cargarPlantas(void) {
-    girasol= LoadTexture("assets/girasol.png");
-    nuez= LoadTexture("assets/nuez.png");
-    cactus= LoadTexture("assets/cactus.png");
-    lanzaguisantes= LoadTexture("assets/lanzaguisantes.png");
+    girasol = LoadTexture("assets/girasol.png");
+    nuez = LoadTexture("assets/nuez.png");
+    cactus = LoadTexture("assets/cactus.png");
+    lanzaguisantes = LoadTexture("assets/lanzaguisantes.png");
 
     sol = LoadTexture("assets/Sun.png");
 
     cardGuisante = LoadTexture("assets/peashooterCard.png");
-    cardGirasol  = LoadTexture("assets/sunflowerCard.png");
-    cardNuez     = LoadTexture("assets/wallnutCard.png");
-    cardCactus   = LoadTexture("assets/cactusCard.png");
+    cardGirasol = LoadTexture("assets/sunflowerCard.png");
+    cardNuez = LoadTexture("assets/wallnutCard.png");
+    cardCactus = LoadTexture("assets/cactusCard.png");
 
+    // Aplica un filtro para mejorar la apariencia de las imágenes
     SetTextureFilter(girasol, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(nuez, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(cactus, TEXTURE_FILTER_BILINEAR);
@@ -184,6 +208,7 @@ void cargarPlantas(void) {
     SetTextureFilter(cardCactus, TEXTURE_FILTER_BILINEAR);
 }
 
+// Libera la memoria de las imágenes cargadas para las plantas y sus tarjetas
 void liberarPlantas(void) {
     UnloadTexture(girasol);
     UnloadTexture(nuez);
@@ -193,12 +218,17 @@ void liberarPlantas(void) {
     UnloadTexture(cardGuisante);
     UnloadTexture(cardGirasol);
     UnloadTexture(cardNuez);
+    UnloadTexture(cardCactus);
 }
 
+
 void dibujarJardin() {
+
+    // Dibuja el fondo del menú superior
     DrawRectangle(0, 0, configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin, configuracion_juego.alto_menu, BROWN);
 
-    DrawTexturePro(
+    
+    DrawTexturePro( // Dibuja la textura del jardín ajustándola a sus dimensiones 
         jardin,
         (Rectangle){0, 0, jardin.width, jardin.height},
         (Rectangle){configuracion_juego.ancho_casa, configuracion_juego.alto_menu, configuracion_juego.ancho_jardin, configuracion_juego.alto_jardin},
@@ -207,11 +237,13 @@ void dibujarJardin() {
         WHITE
     );
 
-        for (int i = 0; i < filas_jardin; i++) {
+   
+    for (int i = 0; i < filas_jardin; i++) { // Recorre todas las filas y columnas del jardín para buscar obstáculos
         for (int j = 0; j < columnas_jardin; j++) {
 
             if (!esObstaculo(i, j)) continue;
 
+            // Calcula la posición y el tamaño de la celda que contiene el obstáculo
             Rectangle celda = {
                 (float)(configuracion_juego.ancho_casa + j * configuracion_juego.ancho_celda),
                 (float)(configuracion_juego.alto_menu + i * configuracion_juego.alto_celda),
@@ -219,38 +251,53 @@ void dibujarJardin() {
                 (float)configuracion_juego.alto_celda
             };
 
+            // Comprueba si la imagen de la lápida se cargó correctamente
             if (lapida.id != 0) {
+
+                // Calcula la escala para que la lápida entre en la celda sin deformarse
                 float escala = fminf(celda.width / lapida.width, celda.height / lapida.height);
+
+                // Calcula la posición para centrar la lápida dentro de la celda
                 Rectangle destino = {
                     celda.x + (celda.width - lapida.width * escala) / 2,
                     celda.y + (celda.height - lapida.height * escala) / 2,
-                    lapida.width * escala, lapida.height * escala
+                    lapida.width * escala,
+                    lapida.height * escala
                 };
+
+                // Dibuja la lápida en el jardín
                 DrawTexturePro(lapida, (Rectangle){0, 0, lapida.width, lapida.height},
                                destino, (Vector2){0, 0}, 0, WHITE);
+
             } else {
+
+                // Si no se cargó la imagen, dibuja un rectángulo como reemplazo
                 DrawRectangle(celda.x + 8, celda.y + 8, celda.width - 16, celda.height - 16, DARKGRAY);
             }
         }
     }
 }
 
+
 void dibujarCasa(void) {
 
-    Rectangle destino = {  // Define la posicion y el tamaño de destino de la imagen
+    // Define la posición y el tamaño que tendrá la imagen de la casa
+    Rectangle destino = {
         0,
         configuracion_juego.alto_menu,
         configuracion_juego.ancho_img_casa,
         configuracion_juego.alto_jardin
     };
 
+    // Define qué parte de la imagen original se utilizará
     Rectangle origen = {
         0, 0,
         casa.width,
         casa.height
     };
 
-    DrawTexturePro(  // Dibuja la imagen al tamaño indicado
+    // Dibuja la casa utilizando las dimensiones definidas
+    DrawTexturePro(
         casa,
         origen,
         destino,
@@ -263,30 +310,35 @@ void dibujarCasa(void) {
 
 void dibujarCortacespedes(void) {
 
+    // Calcula el tamaño que tendrá la imagen del cortacésped
     float alto = configuracion_juego.alto_cortacesped;
     float ancho = alto * cortacesped.width / cortacesped.height;
 
-    for (int i = 0; i < filas_jardin; i++) {
+   
+    for (int i = 0; i < filas_jardin; i++) { // Recorre las filas del jardín
 
-        if (!cortacespedes[i].disponible && !cortacespedes[i].activo) { // Si el cortacesped no esta disponible ni activo, no se dibuja
+        // Si el cortacésped no está disponible ni activo, no se dibuja
+        if (!cortacespedes[i].disponible && !cortacespedes[i].activo) {
             continue;
         }
 
-        Rectangle destino = { //Define posicion y tamaño del cortacesped
+        // Calcula la posición del cortacésped según la fila en la que se encuentra
+        Rectangle destino = {
             configuracion_juego.ancho_casa + cortacespedes[i].x,
             configuracion_juego.alto_menu + i * configuracion_juego.alto_celda + (configuracion_juego.alto_celda - alto) / 2,
             ancho,
             alto
         };
 
-        // Recortar 4 px del borde derecho de la imagen 
+        // Define la parte de la imagen original que se utilizará, recortando 4 píxeles del borde derecho
         Rectangle origen = {
             0, 0,
             cortacesped.width - 4,
             cortacesped.height
         };
 
-        DrawTexturePro(
+       
+        DrawTexturePro(  // Dibuja el cortacésped
             cortacesped,
             origen,
             destino,
@@ -298,8 +350,9 @@ void dibujarCortacespedes(void) {
 }
 
 
-void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
+void dibujarCarril(void) {
 
+    // Dibuja el fondo del carril
     DrawRectangle(
         configuracion_juego.ancho_img_casa,
         configuracion_juego.alto_menu,
@@ -308,7 +361,7 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
         BEIGE
     );
 
-    // Lineas divisorias entre filas
+    // Dibuja las líneas que separan las filas del jardín
     for (int i = 0; i <= filas_jardin; i++) {
 
         DrawLine(
@@ -320,7 +373,7 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
         );
     }
 
-    // Borde del lado del jardin
+    // Dibuja el borde que separa el carril del jardín
     DrawLine(
         configuracion_juego.ancho_casa,
         configuracion_juego.alto_menu,
@@ -331,23 +384,24 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 }
 
 
-
-// carga el menu de arriba (para seleccionar plantas, pala)
 void dibujarMenu(void) {
-DrawRectangle(0, 0, 1000, configuracion_juego.alto_menu, BROWN); //fondo del menu
-// coloca la imagen de sol
-// Contador de soles
-DrawRectangleRounded((Rectangle){15, 15, 120, 70}, 0.2f, 8, (Color){55, 45, 35, 230});
 
-Rectangle origenSol = { 0, 0, (float)sol.width, (float)sol.height };
-Rectangle destinoSol = { 25, 30, 40, 40};
-DrawTexturePro(sol, origenSol, destinoSol, (Vector2){0, 0}, 0, WHITE);
-//convierte los soles en texto
-char textoSoles[20];
-sprintf(textoSoles, "%d", solesJugador);
-DrawText(textoSoles, 75, 32, 30, GOLD);
+    DrawRectangle(0, 0, 1000, configuracion_juego.alto_menu, BROWN);    // Dibuja el fondo del menú
+    DrawRectangleRounded((Rectangle){15, 15, 120, 70}, 0.2f, 8, (Color){55, 45, 35, 230});     // Dibuja el recuadro del contador de soles
 
-    // TARJETA DEL GUISANTE
+    // Define la parte de la imagen del sol que se utilizará y su posición en el menú
+    Rectangle origenSol = {0, 0, (float)sol.width, (float)sol.height};
+    Rectangle destinoSol = {25, 30, 40, 40};
+
+    
+    DrawTexturePro(sol, origenSol, destinoSol, (Vector2){0, 0}, 0, WHITE); // Dibuja el sol en el contador
+
+    // Convierte la cantidad de soles disponibles en texto para mostrarla en pantalla
+    char textoSoles[20];
+    sprintf(textoSoles, "%d", solesJugador);
+    DrawText(textoSoles, 75, 32, 30, GOLD);
+
+    // Dibuja la tarjeta del lanzaguisantes
     DrawTexturePro(
         cardGuisante,
         (Rectangle){0, 0, (float)cardGuisante.width, (float)cardGuisante.height},
@@ -356,13 +410,15 @@ DrawText(textoSoles, 75, 32, 30, GOLD);
         0,
         WHITE
     );
+
+    // Resalta la tarjeta si el lanzaguisantes está seleccionado
     if (plantaSeleccionada == TIPO_GUISANTE) {
         DrawRectangleLinesEx((Rectangle){150, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(150, 10, 110, 80, BLACK);
     }
 
-    // TARJETA DEL GIRASOL
+    // Dibuja la tarjeta del girasol
     DrawTexturePro(
         cardGirasol,
         (Rectangle){0, 0, (float)cardGirasol.width, (float)cardGirasol.height},
@@ -372,13 +428,14 @@ DrawText(textoSoles, 75, 32, 30, GOLD);
         WHITE
     );
 
-	if (plantaSeleccionada == TIPO_GIRASOL) {
+    // Resalta la tarjeta si el girasol está seleccionado
+    if (plantaSeleccionada == TIPO_GIRASOL) {
         DrawRectangleLinesEx((Rectangle){270, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(270, 10, 110, 80, BLACK);
     }
 
-    // TARJETA DE LA NUEZ
+    // Dibuja la tarjeta de la nuez
     DrawTexturePro(
         cardNuez,
         (Rectangle){0, 0, (float)cardNuez.width, (float)cardNuez.height},
@@ -388,13 +445,14 @@ DrawText(textoSoles, 75, 32, 30, GOLD);
         WHITE
     );
 
+    // Resalta la tarjeta si la nuez está seleccionada
     if (plantaSeleccionada == TIPO_NUEZ) {
         DrawRectangleLinesEx((Rectangle){390, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(390, 10, 110, 80, BLACK);
     }
 
-    // TARJETA DEL CACTUS
+    // Dibuja la tarjeta del cactus
     DrawTexturePro(
         cardCactus,
         (Rectangle){0, 0, (float)cardCactus.width, (float)cardCactus.height},
@@ -404,14 +462,14 @@ DrawText(textoSoles, 75, 32, 30, GOLD);
         WHITE
     );
 
+    // Resalta la tarjeta si el cactus está seleccionado
     if (plantaSeleccionada == TIPO_CACTUS) {
-    DrawRectangleLinesEx((Rectangle){510, 10, 110, 80}, 4, GOLD);
+        DrawRectangleLinesEx((Rectangle){510, 10, 110, 80}, 4, GOLD);
     } else {
-    DrawRectangleLines(510, 10, 110, 80, BLACK);
+        DrawRectangleLines(510, 10, 110, 80, BLACK);
     }
 
-    // TARJETA DE LA PALA
-
+    // Dibuja la tarjeta de la pala
     DrawTexturePro(
         pala,
         (Rectangle){0, 0, (float)pala.width, (float)pala.height},
@@ -420,7 +478,8 @@ DrawText(textoSoles, 75, 32, 30, GOLD);
         0,
         WHITE
     );
-	
+
+    // Resalta la tarjeta si la pala está seleccionada
     if (palaSeleccionada == 1) {
         DrawRectangleLinesEx((Rectangle){630, 10, 110, 80}, 4, GOLD);
     } else {
@@ -428,17 +487,17 @@ DrawText(textoSoles, 75, 32, 30, GOLD);
     }
 }
 
-
-
 void dibujarZombie(int x, int y) {
 
+    // Define la parte de la imagen original que se utilizará
     Rectangle origen = {
         0, 0,
         (float)zombieNormal.width,
         (float)zombieNormal.height
     };
 
-    Rectangle destino = {   //Define la posicion y el tamaño del zombie 
+    // Define la posición y el tamaño del zombi en pantalla
+    Rectangle destino = {
         x, y + 5,
         50, 80
     };
@@ -453,14 +512,17 @@ void dibujarZombie(int x, int y) {
     );
 }
 
+
 void dibujarZombieFlag(int x, int y) {
 
+    // Define la parte de la imagen que se utilizará
     Rectangle origen = {
         0, 0,
         zombieFlag.width,
         zombieFlag.height
     };
 
+    // Define la posición y el tamaño del zombi con bandera
     Rectangle destino = {
         x, y,
         100, 100
@@ -476,22 +538,23 @@ void dibujarZombieFlag(int x, int y) {
     );
 }
 
+void dibujarZombieCono(int x, int y) {
 
-void dibujarZombieSinCabeza(int x, int y) {
-
+    // Define la parte de la imagen que se utilizará
     Rectangle origen = {
         0, 0,
-        (float)zombieSinCabeza.width,
-        (float)zombieSinCabeza.height
+        (float)zombieCono.width,
+        (float)zombieCono.height
     };
 
+    // Define la posición y el tamaño del zombi con cono
     Rectangle destino = {
         x, y + 5,
         50, 80
     };
 
     DrawTexturePro(
-        zombieSinCabeza,
+        zombieCono,
         origen,
         destino,
         (Vector2){0, 0},
@@ -501,19 +564,16 @@ void dibujarZombieSinCabeza(int x, int y) {
 }
 
 
-
 void dibujarPlantas(void) {
+    for (int i = 0; i < CANT_PLANTAS; i++) {  // Recorre el arreglo que contiene las plantas
 
-    // Recorrer todas las plantas activas
-    for (int i = 0; i < CANT_PLANTAS; i++) {
+        if (plantas[i].activa == 1) { // Comprueba si la planta está activa
 
-        if (plantas[i].activa == 1) {
-            //Calcula la posicion de la planta segun su fila y columna
-
-			int x = configuracion_juego.ancho_casa + plantas[i].columna * configuracion_juego.ancho_celda;
+            // Calcula la posición de la planta según su fila y columna
+            int x = configuracion_juego.ancho_casa + plantas[i].columna * configuracion_juego.ancho_celda;
             int y = configuracion_juego.alto_menu + plantas[i].fila * configuracion_juego.alto_celda;
 
-            // Posicion y tamaño de las plantas
+            // Define la posición y el tamaño que tendrá la planta
             Rectangle destino = {
                 x + 5,
                 y + 5,
@@ -522,14 +582,11 @@ void dibujarPlantas(void) {
             };
 
             Rectangle origen;
-            //Comprueba el tipo de planta
+
+            // Ve el tipo de planta para seleccionar la imagen correspondiente
             if (plantas[i].tipo == TIPO_GUISANTE) {
 
-                origen = (Rectangle){
-                    0, 0,
-                    lanzaguisantes.width,
-                    lanzaguisantes.height
-                };
+                origen = (Rectangle){0, 0, lanzaguisantes.width, lanzaguisantes.height};
 
                 DrawTexturePro(
                     lanzaguisantes,
@@ -543,11 +600,7 @@ void dibujarPlantas(void) {
             }
             else if (plantas[i].tipo == TIPO_GIRASOL) {
 
-                origen = (Rectangle){
-                    0, 0,
-                    girasol.width,
-                    girasol.height
-                };
+                origen = (Rectangle){0, 0, girasol.width, girasol.height};
 
                 DrawTexturePro(
                     girasol,
@@ -561,11 +614,7 @@ void dibujarPlantas(void) {
             }
             else if (plantas[i].tipo == TIPO_NUEZ) {
 
-                origen = (Rectangle){
-                    0, 0,
-                    nuez.width,
-                    nuez.height
-                };
+                origen = (Rectangle){0, 0, nuez.width, nuez.height};
 
                 DrawTexturePro(
                     nuez,
@@ -579,11 +628,7 @@ void dibujarPlantas(void) {
             }
             else if (plantas[i].tipo == TIPO_CACTUS) {
 
-                origen = (Rectangle){
-                    0, 0,
-                    cactus.width,
-                    cactus.height
-                };
+                origen = (Rectangle){0, 0, cactus.width, cactus.height};
 
                 DrawTexturePro(
                     cactus,
@@ -601,12 +646,15 @@ void dibujarPlantas(void) {
 
 void dibujarSoles(void) {
 
-    for (int i = 0; i < CANT_SOLES; i++) { // Recorre todos los soles
-        if (soles[i].activo == 1) { // Ve si esta activo
-            // Se obtiene la posicion del sol
+    for (int i = 0; i < CANT_SOLES; i++) {  // Recorre todos los soles disponibles
+
+        if (soles[i].activo == 1) { // Comprueba si el sol está activo
+
+            // Calcula la posición del sol dentro de la ventana
             int x = configuracion_juego.ancho_casa + (int)soles[i].x;
             int y = (int)soles[i].y;
 
+            // Dibuja el sol centrado en las coordenadas indicadas
             DrawTexture(sol, x - sol.width / 2, y - sol.height / 2, WHITE);
         }
     }
@@ -614,11 +662,11 @@ void dibujarSoles(void) {
 
 
 void dibujarProyectiles(void) {
-    //Recorre todos los proyectiles
-    for (int i = 0; i < CANT_PROYECTILES; i++) {
+    for (int i = 0; i < CANT_PROYECTILES; i++) {    // Recorre todos los proyectiles disponibles
 
-        if (proyectiles[i].activo == 1) { //Ve si esta activo
+        if (proyectiles[i].activo == 1) {  // Comprueba si el proyectil está activo
 
+            // Dibuja el proyectil como un círculo verde
             DrawCircle(
                 configuracion_juego.ancho_casa + (int)proyectiles[i].x,
                 (int)proyectiles[i].y,
@@ -630,27 +678,22 @@ void dibujarProyectiles(void) {
 }
 
 
-
 void dibujarOleada(void) {
+    if (mostrarNotaOleada == 1) { // Ve si se debe mostrar la nota de inicio de la oleada
 
-    // Mostrar la nota de la oleada
-    if (mostrarNotaOleada == 1) {
+        int indiceNota = oleadaActual - 1; // Obtiene la posición de la imagen correspondiente a la oleada actual
 
-        int indiceNota = oleadaActual - 1;
-
-        // Comprobar que exista una imagen para esta oleada
-        if (indiceNota >= 0 && indiceNota < 5 &&
-            notasOleadas[indiceNota].id != 0) {
+        // Comprueba que el índice esté dentro del arreglo y que la imagen exista
+        if (indiceNota >= 0 && indiceNota < 5 && notasOleadas[indiceNota].id != 0) {
 
             Texture2D nota = notasOleadas[indiceNota];
 
-            // Reducir el tamaño de la imagen al 50 %
-            float escala = 0.5f;
+            float escala = 0.5f; // Reduce el tamaño original de la imagen al 50 %
 
             float ancho = nota.width * escala;
             float alto = nota.height * escala;
 
-            // Centrar la imagen en la pantalla
+            // Calcula las coordenadas para centrar la nota en el jardín
             float x = (configuracion_juego.ancho_casa +
                        configuracion_juego.ancho_jardin -
                        ancho) / 2.0f;
@@ -659,17 +702,20 @@ void dibujarOleada(void) {
                        configuracion_juego.alto_jardin -
                        alto) / 2.0f;
 
+            // Define la parte de la imagen original que se utilizará
             Rectangle origen = {
                 0, 0,
                 (float)nota.width,
                 (float)nota.height
             };
 
+            // Define la posición y el tamaño final de la imagen
             Rectangle destino = {
                 x, y,
                 ancho, alto
             };
 
+            // Dibuja la nota de la oleada en el centro del jardín
             DrawTexturePro(
                 nota,
                 origen,
@@ -681,22 +727,19 @@ void dibujarOleada(void) {
         }
     }
 
-    // Contar zombis restantes
-    int zombisPorDerrotar = zombisRestantes;
-
-    for (int i = 0; i < CANT_ZOMBIS; i++) {
+    int zombisPorDerrotar = zombisRestantes;    // Obtiene la cantidad de zombis que quedan por derrotar
+    for (int i = 0; i < CANT_ZOMBIS; i++) {  // Recorre los zombis para contar los que siguen vivos
         if (zombieVivo(i)) {
             zombisPorDerrotar++;
         }
     }
+        // Convierte la cantidad de zombis restantes en texto
+        char textoZombis[30];
+        sprintf(textoZombis, "Zombis: %d", zombisPorDerrotar);
+        DrawText(textoZombis, 760, 15, 20, WHITE);
 
-    // Mostrar zombis restantes
-    char textoZombis[30];
-    sprintf(textoZombis, "Zombis: %d", zombisPorDerrotar);
-    DrawText(textoZombis, 760, 15, 20, WHITE);
-
-    // Mostrar oleada actual
-    char textoOleada[30];
-    sprintf(textoOleada, "Oleada: %d", oleadaActual);
-    DrawText(textoOleada, 760, 55, 20, WHITE);
+        // Convierte el número de la oleada actual en texto
+        char textoOleada[30];
+        sprintf(textoOleada, "Oleada: %d", oleadaActual);
+        DrawText(textoOleada, 760, 55, 20, WHITE);
 }

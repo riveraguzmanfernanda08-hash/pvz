@@ -47,7 +47,7 @@ typedef struct {
 enum {
     ZOMBI_NORMAL,
     ZOMBI_FLAG,
-    ZOMBI_SIN_CABEZA,
+    ZOMBI_CONO,
     NUM_TIPOS_ZOMBI
 };
 

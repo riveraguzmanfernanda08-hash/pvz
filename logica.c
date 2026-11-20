@@ -22,7 +22,7 @@ float temporizadorEntreOleadas = 0;
 Cortacesped cortacespedes[max_filas]; //guarda los cortacespedes
 int juegoPerdido = 0;
 int zombisFlagPendientes = 0;
-int zombisSinCabezaPendientes = 0;
+int zombisConoPendientes = 0;
 int palaSeleccionada = 0;
 int juegoGanado = 0;
 int mostrarNotaOleada = 0;
@@ -41,7 +41,6 @@ void inicializarZombis(void) {
 }
 
 void moverZombis(float tiempo) { // actualiza la posicion de los zombis para que avancen
-
     for (int i = 0; i < CANT_ZOMBIS; i++) {
 
         if (zombieVivo(i)) {
@@ -61,21 +60,16 @@ void moverZombis(float tiempo) { // actualiza la posicion de los zombis para que
             // Buscar otro zombi delante en la misma fila
             for (int j = 0; j < CANT_ZOMBIS; j++) {
 
-                if (i != j && zombieVivo(j) &&
-                    zombis[i].fila == zombis[j].fila &&
-                    zombis[j].x < zombis[i].x) {
+                if (i != j && zombieVivo(j) && zombis[i].fila == zombis[j].fila && zombis[j].x < zombis[i].x) {
 
-                    // Mantener una distancia minima de 100 pixeles
-                    float limite = zombis[j].x + 100;
+                    float limite = zombis[j].x + 100;// Mantener una distancia minima de 100 pixeles
 
                 if (nuevaX < limite) {
                     nuevaX = limite;
                 }
                     }
             }
-
-            // Comprobar si hay una planta delante
-            if (!hayPlantaDelante(zombis[i].fila, zombis[i].x)) {
+            if (!hayPlantaDelante(zombis[i].fila, zombis[i].x)) { // ve si hay una planta delante
                 zombis[i].x = nuevaX;
             }
         }
@@ -124,8 +118,7 @@ int colocarPlanta(int fila, int columna, int tipo) { // coloca una planta en la 
         return 0;
     }
 
-    // no se puede plantar sobre un obstaculo
-    if(esObstaculo(fila, columna)) {
+    if(esObstaculo(fila, columna)) { // no se puede plantar sobre un obstaculo
         return 0;
     }
 
@@ -145,9 +138,7 @@ int colocarPlanta(int fila, int columna, int tipo) { // coloca una planta en la 
     // Comprobar que la casilla no este ocupada
     for(int i = 0; i < CANT_PLANTAS; i++) {
 
-        if (plantas[i].activa == 1 &&
-            plantas[i].fila == fila &&
-            plantas[i].columna == columna) {
+        if (plantas[i].activa == 1 && plantas[i].fila == fila && plantas[i].columna == columna) {
             return 0;
         }
     }
@@ -156,12 +147,10 @@ int colocarPlanta(int fila, int columna, int tipo) { // coloca una planta en la 
     for(int i = 0; i < CANT_PLANTAS; i++) {
         if (plantas[i].activa == 0) {
             plantas[i] = nueva;
-
             plantas[i].tipo = tipo;
             plantas[i].fila = fila;
             plantas[i].columna = columna;
             plantas[i].temporizador = 0;
-
             plantas[i].activa = 1;
 
             solesJugador -= nueva.costoSoles;
@@ -186,8 +175,6 @@ void generarSol(void) {  //genera un sol en una posicion aleatoria del jardin
         if (soles[i].activo == 0) { //busca un espacio libre en el arreglo.
             soles[i].x = 50 + rand() % (configuracion_juego.ancho_jardin - 100); //Genera una posicion aleatoria dentro del jardin.
             soles[i].y = configuracion_juego.alto_menu + 30 + rand() % (configuracion_juego.alto_jardin - 60);
-
-
             soles[i].activo = 1; //Activa el sol para que pueda dibujarse.
             return;
         }
@@ -215,7 +202,6 @@ void actualizarSoles(float tiempo) {
     temporizadorSol += tiempo;
 
     if (temporizadorSol >= configuracion_juego.cooldown_sol) { //genera un sol cuando se cumple el cooldown
-
         generarSol();
         temporizadorSol = 0; //reinicia el temporizador
     }
@@ -252,8 +238,6 @@ void producirSoles(float tiempo) { //produccion de soles por el girasol
 }
 
 
-
-
 void seleccionarPlanta(int mouseX, int mouseY) { 
     Vector2 mousePos = {(float)mouseX, (float)mouseY};
     // Define el area de cada tarjeta del menu
@@ -288,7 +272,6 @@ void seleccionarPlanta(int mouseX, int mouseY) {
 
 
 void quitarPlanta(int fila, int columna) { //quita una planta de la casilla indicada
-
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
         // Busca una planta activa que este en la fila y columna indicadas
@@ -317,7 +300,6 @@ void inicializarProyectiles(void) {
 }
 
 int generarProyectil(float x, float y, int fila, int dano) { 
-
     for (int i = 0; i < CANT_PROYECTILES; i++) { //busca un espacio disponible
 
         if (proyectiles[i].activo == 0) { //busca un espacio disponible
@@ -336,9 +318,7 @@ int generarProyectil(float x, float y, int fila, int dano) {
 }
 
 void moverProyectiles(float tiempo) { //mueve los proyectiles hacia la derecha
-
     for (int i = 0; i < CANT_PROYECTILES; i++) {
-
         if (proyectiles[i].activo == 1) {
 
             proyectiles[i].x += 300 * tiempo; //actualiza la posicion del proyectil
@@ -364,7 +344,6 @@ int hayZombieDelante(int fila, float x) {
 
 
 void actualizarDisparos(float tiempo) {
-
     for (int i = 0; i < CANT_PLANTAS; i++) {
 
         // Comprueba que la planta este activa y pueda disparar
@@ -373,7 +352,6 @@ void actualizarDisparos(float tiempo) {
             // Calcula el centro de la casilla
             float x = plantas[i].columna * configuracion_juego.ancho_celda + configuracion_juego.ancho_celda / 2;
             float y = configuracion_juego.alto_menu + plantas[i].fila * configuracion_juego.alto_celda + configuracion_juego.alto_celda / 2;
-
             plantas[i].temporizador += tiempo; //actualiza el tiempo de espera
 
             // Comprueba si hay un zombie delante
@@ -407,7 +385,6 @@ void detectarImpactos(void) {
 }
 
 int hayPlantaDelante(int fila, float x) {
-
     int plantaEncontrada = 0;
     float distanciaMenor = configuracion_juego.ancho_jardin + 100;
 
@@ -456,24 +433,24 @@ void iniciarOleada(void) {
     // Calcula cuantos zombis bandera apareceran
     zombisFlagPendientes = (oleadaActual + 2) / 3;
 
-    // Calcula cuantos zombis sin cabeza apareceran desde la oleada 2
-    zombisSinCabezaPendientes = oleadaActual / 2;
+    // Calcula cuantos zombis cono apareceran desde la oleada 2
+    zombisConoPendientes = oleadaActual / 2;
 
     // Evita que haya mas zombis especiales que zombis disponibles
     if (zombisFlagPendientes > zombisRestantes) {
         zombisFlagPendientes = zombisRestantes;
     }
 
-    if (zombisSinCabezaPendientes >
+    if (zombisConoPendientes >
         zombisRestantes - zombisFlagPendientes) {
-        zombisSinCabezaPendientes =
+        zombisConoPendientes =
             zombisRestantes - zombisFlagPendientes;
     }
 
     temporizadorOleada = 0; //reinicia el tiempo de la oleada
 
 
-    // Mostrar la nota de la oleada
+    //mostrar la nota de la oleada
     mostrarNotaOleada = 1;
     temporizadorNotaOleada = 0;
 }
@@ -514,7 +491,7 @@ int generarZombi(void) {
 
             // Elegir al azar el tipo de zombi segun los pendientes
             int cantidadEspeciales =
-            zombisFlagPendientes + zombisSinCabezaPendientes;
+            zombisFlagPendientes + zombisConoPendientes;
 
             int seleccion = rand() % zombisRestantes;
             int tipo;
@@ -523,8 +500,8 @@ int generarZombi(void) {
                 tipo = ZOMBI_FLAG;
                 zombisFlagPendientes--;
             } else if(seleccion < cantidadEspeciales) {
-                tipo = ZOMBI_SIN_CABEZA;
-                zombisSinCabezaPendientes--;
+                tipo = ZOMBI_CONO;
+                zombisConoPendientes--;
             } else {
                 tipo = ZOMBI_NORMAL;
             }
@@ -548,13 +525,12 @@ int generarZombi(void) {
 
 void actualizarOleadas(float tiempo) {
 
-    // Controlar el tiempo que aparece la nota de oleada
+    // controla el tiempo que aparece la nota de oleada
     if (mostrarNotaOleada == 1) {
-
         temporizadorNotaOleada += tiempo;
 
-        // La nota permanece visible durante 5 segundos
-        if (temporizadorNotaOleada >= 5.0f) {
+        
+        if (temporizadorNotaOleada >= 5.0f) {//la nota permanece visible durante 5 segundos
             mostrarNotaOleada = 0;
             temporizadorNotaOleada = 0;
         }
@@ -621,8 +597,7 @@ void inicializarCortacespedes(void) {
     }
 }
 
-// se activa cuando un zombi vivo de su fila llega al borde del jardín
-void activarCortacespedes(void) {
+void activarCortacespedes(void) {// se activa cuando un zombi vivo de su fila llega al borde del jardín
     for (int f = 0; f < filas_jardin; f++) {
         if (!cortacespedes[f].disponible) continue;//si el cortacesped ya no esta disponible, pasa a la siguiente fila
         for (int j = 0; j < CANT_ZOMBIS; j++) { //ve si un zombie vivo de esa fila llego al borde del jardin
@@ -635,8 +610,7 @@ void activarCortacespedes(void) {
     }
 }
 
-// avanza y elimina a los zombis de su fila que toca
-void actualizarCortacespedes(float tiempo) {
+void actualizarCortacespedes(float tiempo) { // avanza y elimina a los zombis de su fila que toca
     for (int i = 0; i < filas_jardin; i++) {
 
         if (cortacespedes[i].activo == 1) { //ve si el cortacesped esta activo

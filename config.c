@@ -11,7 +11,7 @@ int filas_jardin = 5;
 int columnas_jardin = 9;
 
 void inicializarConfiguracion(void) {
-    // --- Juego ---
+    //Juego
     ConfiguracionJuego *c = &configuracion_juego;
 
     c->ancho_celda = 80;
@@ -28,7 +28,7 @@ void inicializarConfiguracion(void) {
     c->radio_sol = 18;
     c->cooldown_sol = 8.0f;
 
-    // --- Zombis ---
+    //Zombis
     tipos_zombi[ZOMBI_NORMAL] = (TipoZombi) {
         .vida = 325, .dano = 50, .velocidad = 17
     };
@@ -36,11 +36,11 @@ void inicializarConfiguracion(void) {
 
         .vida = 325, .dano = 75, .velocidad = 22
     };
-    tipos_zombi[ZOMBI_SIN_CABEZA] = (TipoZombi) {
-        .vida = 600, .dano = 100, .velocidad = 16
+    tipos_zombi[ZOMBI_CONO] = (TipoZombi) {
+        .vida = 600, .dano = 100, .velocidad = 9
     };
 
-    // --- Plantas ---
+    // Plantas
     tipos_planta[TIPO_GUISANTE] = (TipoPlanta) {
         .vida = 300, .dano = 20, .costo = 100, .produccion = 0, .cooldown = 1.5f
     };
@@ -54,7 +54,7 @@ void inicializarConfiguracion(void) {
         .vida = 250, .dano = 25, .costo = 125, .produccion = 0, .cooldown = 1.5f
     };
 
-    // --- Oleadas ---
+    //Oleadas
     configuracion_oleada = (ConfiguracionOleada) {
         .zombis_por_oleada = 5,
         .tiempo_entre_zombis = 3.0f,
@@ -79,14 +79,14 @@ void calcularDerivadas(void) {
     c->cooldown_sol = cooldown;
 }
 
-void crear_zombi_id(int id, Zombi *zombi) {
+void crear_zombi_id(int id, Zombi *zombi) { // inicializa las características de un zombi según su tipo
     zombi->vida = tipos_zombi[id].vida;
     zombi->dano = tipos_zombi[id].dano;
     zombi->velocidad = tipos_zombi[id].velocidad;
     zombi->tipo = id;
 }
 
-void crear_planta_id(int id, Planta *planta) {
+void crear_planta_id(int id, Planta *planta) { // inicializa las características de una planta según su tipo
     planta->vida = tipos_planta[id].vida;
     planta->dano = tipos_planta[id].dano;
     planta->costoSoles = tipos_planta[id].costo;

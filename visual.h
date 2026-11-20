@@ -5,8 +5,10 @@ void cerrarVentana(void);
 
 void cargarJardin(void);
 void liberarJardin(void);
+
 void cargarLapida(void);
 void liberarLapida(void);
+
 void cargarNotasOleadas(void);
 void liberarNotasOleadas(void);
 
@@ -20,13 +22,15 @@ void liberarPala(void);
 
 void cargarZombieNormal(void);
 void liberarZombieNormal(void);
-void cargarZombieSinCabeza(void);
-void liberarZombieSinCabeza(void);
+
+void cargarZombieCono(void);
+void liberarZombieCono(void);
+
 void cargarZombieFlag(void);
 void liberarZombieFlag(void);
 
 void dibujarZombieFlag(int x, int y);
-void dibujarZombieSinCabeza(int x, int y);
+void dibujarZombieCono(int x, int y);
 void dibujarZombie(int x, int y); 
 
 void cargarPlantas(void);

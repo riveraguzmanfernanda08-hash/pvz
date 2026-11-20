@@ -56,7 +56,7 @@ typedef struct {
 
 
 
-
+// Variables globales usadas por la lógica, compartidas entre distintos archivos 
 extern Zombi zombis[CANT_ZOMBIS];
 extern Planta plantas[CANT_PLANTAS];
 extern int solesJugador;
