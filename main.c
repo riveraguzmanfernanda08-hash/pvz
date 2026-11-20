@@ -3,12 +3,13 @@
 #include "logica.h"
 #include "raylib.h"
 #include "config.h"
+#include "lectura.h"
 
-Music musicaFondo; //Variable que guarda la musica
+Music musicaFondo;
 
 // Reinicia todos los elementos de la partida
 void reiniciarPartida(void) {
-    //Inicializar todos los elementos
+
     inicializarZombis();
     inicializarPlantas();
     inicializarSoles();
@@ -25,7 +26,7 @@ void reiniciarPartida(void) {
     palaSeleccionada = 0;
     plantaSeleccionada = -1;
 
-    iniciarOleada(); //Comenenzar desde la primera oleada
+    iniciarOleada();
 
     // Reiniciar soles
     solesJugador = 200;
@@ -35,13 +36,31 @@ void reiniciarPartida(void) {
     juegoGanado = 0;
 }
 
-
 int main(void) {
-    inicializarConfiguracion();
-    iniciarVentana();   //Inicializar la ventana 
-    InitAudioDevice(); //Inicializar audio
 
-    //Cargar y reproducir música
+    int filas;
+    int columnas;
+
+    int **mapa = leerMapa("mapa.txt", &filas, &columnas);
+
+    if (mapa == NULL) {
+        printf("No se pudo cargar el mapa\n");
+        return 1;
+    }
+
+    printf("Mapa cargado correctamente:\n");
+    printf("Filas: %d\n", filas);
+    printf("Columnas: %d\n", columnas);
+
+    mostrarMapa(mapa, filas, columnas);
+
+    // Inicializar configuración del juego (antes de crear la ventana)
+    inicializarConfiguracion();
+
+    iniciarVentana();
+    InitAudioDevice();
+
+    // Cargar y reproducir música
     musicaFondo = LoadMusicStream("assets/musica.mp3");
     SetMusicVolume(musicaFondo, 0.4f);
     PlayMusicStream(musicaFondo);
@@ -62,16 +81,16 @@ int main(void) {
     inicializarProyectiles();
     inicializarCortacespedes();
 
-    iniciarOleada(); //Comenzar primera oleada
+    iniciarOleada();
 
-    while (!WindowShouldClose()) { //Mantener el juego abierto mientras usuario no cierre la ventana
+    while (!WindowShouldClose()) {
 
-        UpdateMusicStream(musicaFondo);// Actualizar música
+        UpdateMusicStream(musicaFondo);
 
-        float tiempo = GetFrameTime(); // Obtener el tiempo transcurrido entre fotogramas
+        float tiempo = GetFrameTime();
 
         // ACTUALIZAR EL JUEGO
-        if (juegoPerdido == 0 && juegoGanado == 0) { //Mientras la partida no ha terminado
+        if (juegoPerdido == 0 && juegoGanado == 0) {
 
             moverZombis(tiempo);
 
@@ -90,59 +109,62 @@ int main(void) {
             moverProyectiles(tiempo);
             detectarImpactos();
 
-
             // DETECTAR CLIC DEL MOUSE
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { //Comprobar si el usuario presiono clic izquierdo del mouse
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 
-                Vector2 mousePos = GetMousePosition(); //Obtener la posicion del mouse
+                Vector2 mousePos = GetMousePosition();
 
-                recogerSol(mousePos);// Recoger soles
+                recogerSol(mousePos);
 
-                seleccionarPlanta(GetMouseX(), GetMouseY()); // Seleccionar planta o pala
+                seleccionarPlanta(GetMouseX(), GetMouseY());
 
                 // Comprobar si el clic fue dentro del jardín
-                if (mousePos.x >= configuracion_juego.ancho_casa && mousePos.x < configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin &&
-                    mousePos.y >= configuracion_juego.alto_menu && mousePos.y < configuracion_juego.alto_menu + configuracion_juego.alto_jardin) {
-                    
-                        // Calcular la fila y columna donde se hizo clic
+                if (mousePos.x >= configuracion_juego.ancho_casa &&
+                    mousePos.x < configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin &&
+                    mousePos.y >= configuracion_juego.alto_menu &&
+                    mousePos.y < configuracion_juego.alto_menu + configuracion_juego.alto_jardin) {
+
+                    // Calcular la fila y columna donde se hizo clic
                     int fila = (mousePos.y - configuracion_juego.alto_menu) / configuracion_juego.alto_celda;
-                    int columna = (mousePos.x - configuracion_juego.ancho_casa) / configuracion_juego.ancho_celda;
+                int columna = (mousePos.x - configuracion_juego.ancho_casa) / configuracion_juego.ancho_celda;
 
-                    // Si está seleccionada la pala
-                    if (palaSeleccionada == 1) {
+                // Si está seleccionada la pala
+                if (palaSeleccionada == 1) {
 
-                        quitarPlanta(fila, columna); //Quitar planta de la casilla seleccionada
+                    quitarPlanta(fila, columna);
 
-                    }
+                }
 
-                    // Si está seleccionada una planta
-                    else if (plantaSeleccionada != -1) {
+                // Si está seleccionada una planta
+                else if (plantaSeleccionada != -1) {
 
-                        if (colocarPlanta(fila, columna, plantaSeleccionada)) { //Coloca la planta en la casilla seleccionada 
-                            plantaSeleccionada = -1; //Dejar de seleccionar
-                        }
+                    if (colocarPlanta(fila, columna, plantaSeleccionada)) {
+                        plantaSeleccionada = -1;
                     }
                 }
+                    }
             }
         }
-
 
         // DETECTAR CLIC EN VOLVER A JUGAR
         else {
 
-            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) { //Ver si hizo clic
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
 
-                Vector2 mousePos = GetMousePosition(); //Obtener la posicion del mouse
+                Vector2 mousePos = GetMousePosition();
 
-                Rectangle boton = { //Posicion y tamaño del boton
-                    (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - 240) / 2, 380,240,60 };
+                Rectangle boton = {
+                    (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - 240) / 2,
+                    380,
+                    240,
+                    60
+                };
 
-                if (CheckCollisionPointRec(mousePos, boton)) { //Ver si el clic fue en el boton
+                if (CheckCollisionPointRec(mousePos, boton)) {
                     reiniciarPartida();
                 }
             }
         }
-
 
         // DIBUJAR EL JUEGO
         BeginDrawing();
@@ -160,108 +182,96 @@ int main(void) {
         dibujarSoles();
         dibujarProyectiles();
 
-
         // DIBUJAR ZOMBIS
         for (int i = 0; i < CANT_ZOMBIS; i++) {
 
-            if (zombieVivo(i)) { //Ver si el zombie sigue vivo
+            if (zombieVivo(i)) {
 
-                //Calcular la posicion del zombie 
                 int xZombie = (int)(configuracion_juego.ancho_casa + zombis[i].x);
                 int yZombie = configuracion_juego.alto_menu + zombis[i].fila * configuracion_juego.alto_celda;
 
-                // Comprobar el tipo de zombi
                 if (zombis[i].tipo == ZOMBI_NORMAL) {
                     dibujarZombie(xZombie, yZombie);
-
                 }
                 else if (zombis[i].tipo == ZOMBI_FLAG) {
                     dibujarZombieFlag(xZombie, yZombie);
-
                 }
                 else if (zombis[i].tipo == ZOMBI_SIN_CABEZA) {
                     dibujarZombieSinCabeza(xZombie, yZombie);
-
                 }
             }
         }
 
-
         // PANTALLA DE DERROTA
         if (juegoPerdido == 1) {
 
-            DrawRectangle( //Oscurece la pantalla
+            DrawRectangle(
                 0, 0,
                 configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
                 configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
-
                 Fade(BLACK, 0.65f)
             );
 
-            DrawText( //Mostar el mensaje
+            DrawText(
                 "GAME OVER",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("GAME OVER", 60)) / 2,
-                300,
-                60,
-                RED
+                     300,
+                     60,
+                     RED
             );
         }
-
 
         // PANTALLA DE VICTORIA
         else if (juegoGanado == 1) {
 
-            DrawRectangle( //Oscurece la pantalla
+            DrawRectangle(
                 0, 0,
                 configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
                 configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
                 Fade(BLACK, 0.65f)
             );
 
-            DrawText( //Muestra el mensaje
+            DrawText(
                 "¡VICTORIA!",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("¡VICTORIA!", 60)) / 2,
-
-                270,
-                60,
-                GOLD
+                     270,
+                     60,
+                     GOLD
             );
 
-            DrawText( //Muestra el mensaje
+            DrawText(
                 "Has protegido tu casa",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("Has protegido tu casa", 25)) / 2,
-                340,
-                25,
-                WHITE
+                     340,
+                     25,
+                     WHITE
             );
         }
 
-
         // BOTON VOLVER A JUGAR
-        if (juegoPerdido == 1 || juegoGanado == 1) { //Mostar cuando la partida termine
+        if (juegoPerdido == 1 || juegoGanado == 1) {
 
-            Rectangle boton = { //Posicion y tamaño del boton
+            Rectangle boton = {
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - 240) / 2,
                 380,
                 240,
                 60
             };
 
-            DrawRectangleRec(boton, DARKGREEN); //Fonso del boton
-            DrawRectangleLinesEx(boton, 3, WHITE); //Borde del boton
+            DrawRectangleRec(boton, DARKGREEN);
+            DrawRectangleLinesEx(boton, 3, WHITE);
 
-            DrawText( //Mostrar mensaje
+            DrawText(
                 "VOLVER A JUGAR",
                 boton.x + (boton.width - MeasureText("VOLVER A JUGAR", 20)) / 2,
-                boton.y + 20,
-                20,
-                WHITE
+                     boton.y + 20,
+                     20,
+                     WHITE
             );
         }
-        //Termina el dibujo de los distintos elementos 
+
         EndDrawing();
     }
-
 
     // LIBERAR RECURSOS
     liberarJardin();
@@ -278,7 +288,9 @@ int main(void) {
     UnloadMusicStream(musicaFondo);
     CloseAudioDevice();
 
-    cerrarVentana(); 
+    cerrarVentana();
+
+    liberarMapa(mapa, filas);
 
     return 0;
 }

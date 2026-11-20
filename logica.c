@@ -38,27 +38,48 @@ void inicializarZombis(void) {
     }
 }
 
+void moverZombis(float tiempo) { // actualiza la posicion de los zombis para que avancen
 
-void moverZombis(float tiempo) { //actualiza la posicion de los zombies para que avancen
-    for (int i = 0; i < CANT_ZOMBIS; i++) { //recorre todos los zombies 
+    for (int i = 0; i < CANT_ZOMBIS; i++) {
 
-        if (zombieVivo(i)) { //ve si esta vivo
+        if (zombieVivo(i)) {
+
             // Si llega a la casa, se detiene
             if (zombis[i].x <= 0) {
                 zombis[i].x = 0;
                 continue;
             }
 
+            // La velocidad ya viene asignada por crear_zombi_id
             float velocidad = zombis[i].velocidad;
 
+            // Calcular la nueva posicion
+            float nuevaX = zombis[i].x - velocidad * tiempo;
 
-            // Si no hay una planta delante, avanza
+            // Buscar otro zombi delante en la misma fila
+            for (int j = 0; j < CANT_ZOMBIS; j++) {
+
+                if (i != j && zombieVivo(j) &&
+                    zombis[i].fila == zombis[j].fila &&
+                    zombis[j].x < zombis[i].x) {
+
+                    // Mantener una distancia minima de 100 pixeles
+                    float limite = zombis[j].x + 100;
+
+                if (nuevaX < limite) {
+                    nuevaX = limite;
+                }
+                    }
+            }
+
+            // Comprobar si hay una planta delante
             if (!hayPlantaDelante(zombis[i].fila, zombis[i].x)) {
-                zombis[i].x -= velocidad * tiempo;
+                zombis[i].x = nuevaX;
             }
         }
     }
 }
+
 
 
 int zombieVivo(int numeroZombie){ //comprueba si un zombie sigue vivo segun la vida que le queda
