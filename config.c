@@ -7,6 +7,8 @@ TipoZombi tipos_zombi[NUM_TIPOS_ZOMBI];
 TipoPlanta tipos_planta[NUM_TIPOS_PLANTA];
 ConfiguracionOleada configuracion_oleada;
 
+int filas_jardin = 5;
+int columnas_jardin = 9;
 
 void inicializarConfiguracion(void) {
     // --- Juego ---
@@ -16,12 +18,8 @@ void inicializarConfiguracion(void) {
     c->alto_celda = 90;
     c->alto_menu = 100;
 
-    c->ancho_jardin = COLUMNAS * c->ancho_celda;
-    c->alto_jardin = FILAS * c->alto_celda;
-
     c->ancho_img_casa = 100;
     c->ancho_carril = 80;
-    c->ancho_casa = c->ancho_img_casa + c->ancho_carril;
 
     c->alto_cortacesped = 55;
     c->posicion_cortacesped = -72;
@@ -63,6 +61,22 @@ void inicializarConfiguracion(void) {
         .tiempo_entre_oleadas = 5.0f,
         .max_oleadas = 5
     };
+}
+
+// calcula los valores que dependen del tamaño del mapa
+void calcularDerivadas(void) {
+    ConfiguracionJuego *c = &configuracion_juego;
+
+    c->ancho_jardin = columnas_jardin * c->ancho_celda;
+    c->alto_jardin = filas_jardin * c->alto_celda;
+    c->ancho_casa = c->ancho_img_casa + c->ancho_carril;
+
+    // si el mapa es mas grande, habrá mas soles
+    float base = c->cooldown_sol;
+    float cooldown = base * 45 / (float)(filas_jardin * columnas_jardin);
+    if (cooldown > base) cooldown = base;
+    if (cooldown < 1.0f) cooldown = 1.0f;
+    c->cooldown_sol = cooldown;
 }
 
 void crear_zombi_id(int id, Zombi *zombi) {

@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <strings.h>
 #include "visual.h"
 #include "logica.h"
 #include "raylib.h"
@@ -36,36 +38,56 @@ void reiniciarPartida(void) {
     juegoGanado = 0;
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {
+
+    const char *archivoMapa = "mapa.txt";
+    const char *archivoConfig = "config.txt";
+
+    // modo generador: ./pvz --generar <filas> <columnas> <archivo> [%obstaculos]
+    if (argc >= 5 && strcmp(argv[1], "--generar") == 0) {
+        int porcentaje = (argc >= 6) ? atoi(argv[5]) : 15;
+        if (generarMapa(argv[4], atoi(argv[2]), atoi(argv[3]), porcentaje)) {
+            printf("Mapa generado en '%s'\n", argv[4]);
+            return 0;
+        }
+        return 1;
+    }
+
+    // uso normal: ./pvz [mapa.txt] [config.txt]
+    if (argc >= 2) archivoMapa = argv[1];
+    if (argc >= 3) archivoConfig = argv[2];
 
     int filas;
     int columnas;
 
-    int **mapa = leerMapa("mapa.txt", &filas, &columnas);
+    mapa_jardin = leerMapa(archivoMapa, &filas, &columnas);
 
-    if (mapa == NULL) {
+    if (mapa_jardin == NULL) {
         printf("No se pudo cargar el mapa\n");
         return 1;
     }
-
-    printf("Mapa cargado correctamente:\n");
-    printf("Filas: %d\n", filas);
-    printf("Columnas: %d\n", columnas);
-
-    mostrarMapa(mapa, filas, columnas);
-
-    // Inicializar configuración del juego (antes de crear la ventana)
+    filas_jardin = filas;
+    columnas_jardin = columnas;
+    printf("mapa cargado correctamente: %d filas x %d columnas\n", filas, columnas);
     inicializarConfiguracion();
+
+    if (!leerConfiguracion(archivoConfig)) {
+        printf("Configuracion no valida o ausente: se usan los valores por defecto\n");
+        inicializarConfiguracion();
+    }
+
+    calcularDerivadas();
 
     iniciarVentana();
     InitAudioDevice();
 
     // Cargar y reproducir música
-    musicaFondo = LoadMusicStream("assets/musica.mp3");
+    musicaFondo = LoadMusicStream("assets/musica.wav");
     SetMusicVolume(musicaFondo, 0.4f);
     PlayMusicStream(musicaFondo);
 
     cargarJardin();
+    cargarLapida();
     cargarCasa();
     cargarPlantas();
     cargarCortacesped();
@@ -275,6 +297,7 @@ int main(void) {
 
     // LIBERAR RECURSOS
     liberarJardin();
+    liberarLapida();
     liberarCasa();
     liberarPlantas();
     liberarCortacesped();
@@ -290,7 +313,8 @@ int main(void) {
 
     cerrarVentana();
 
-    liberarMapa(mapa, filas);
+    liberarMapa(mapa_jardin, filas);
+    mapa_jardin = NULL;
 
     return 0;
 }

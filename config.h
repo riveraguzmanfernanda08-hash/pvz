@@ -64,7 +64,8 @@ extern TipoZombi tipos_zombi[NUM_TIPOS_ZOMBI];
 extern TipoPlanta tipos_planta[NUM_TIPOS_PLANTA];
 extern ConfiguracionOleada configuracion_oleada;
 
-void inicializarConfiguracion();
+void inicializarConfiguracion(void);
+void calcularDerivadas(void);
 
 void crear_zombi_id(int id, Zombi *zombi);
 void crear_planta_id(int id, Planta *planta);

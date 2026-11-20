@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "config.h"
 #include "logica.h"
+#include "constantes.h"
 #include <stdio.h>
 
 
@@ -18,6 +19,7 @@ Texture2D nuez;
 Texture2D cactus;
 Texture2D lanzaguisantes;
 Texture2D sol;
+Texture2D lapida;
 
 Texture2D cardGuisante;
 Texture2D cardGirasol;
@@ -27,7 +29,7 @@ Texture2D cardCactus;
 void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
     InitWindow(
         configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
-        configuracion_juego.alto_menu + FILAS * configuracion_juego.alto_celda,
+        configuracion_juego.alto_menu + filas_jardin * configuracion_juego.alto_celda,
 
         "Plants vs zombies"
     );
@@ -49,6 +51,16 @@ void cargarJardin(void) {
 
 void liberarJardin(void) {
     UnloadTexture(jardin);
+}
+
+void cargarLapida(void) {
+    lapida = LoadTexture("assets/lapida.png");
+    if (lapida.id != 0) SetTextureFilter(lapida, TEXTURE_FILTER_BILINEAR);
+}
+
+void liberarLapida(void) {
+    if (lapida.id != 0)
+        UnloadTexture(lapida);
 }
 
 void cargarCasa(void) {
@@ -158,6 +170,33 @@ void dibujarJardin() {
         0,
         WHITE
     );
+
+        for (int i = 0; i < filas_jardin; i++) {
+        for (int j = 0; j < columnas_jardin; j++) {
+
+            if (!esObstaculo(i, j)) continue;
+
+            Rectangle celda = {
+                (float)(configuracion_juego.ancho_casa + j * configuracion_juego.ancho_celda),
+                (float)(configuracion_juego.alto_menu + i * configuracion_juego.alto_celda),
+                (float)configuracion_juego.ancho_celda,
+                (float)configuracion_juego.alto_celda
+            };
+
+            if (lapida.id != 0) {
+                float escala = fminf(celda.width / lapida.width, celda.height / lapida.height);
+                Rectangle destino = {
+                    celda.x + (celda.width - lapida.width * escala) / 2,
+                    celda.y + (celda.height - lapida.height * escala) / 2,
+                    lapida.width * escala, lapida.height * escala
+                };
+                DrawTexturePro(lapida, (Rectangle){0, 0, lapida.width, lapida.height},
+                               destino, (Vector2){0, 0}, 0, WHITE);
+            } else {
+                DrawRectangle(celda.x + 8, celda.y + 8, celda.width - 16, celda.height - 16, DARKGRAY);
+            }
+        }
+    }
 }
 
 void dibujarCasa(void) {
@@ -191,7 +230,7 @@ void dibujarCortacespedes(void) {
     float alto = configuracion_juego.alto_cortacesped;
     float ancho = alto * cortacesped.width / cortacesped.height;
 
-    for (int i = 0; i < FILAS; i++) {
+    for (int i = 0; i < filas_jardin; i++) {
 
         if (!cortacespedes[i].disponible && !cortacespedes[i].activo) { // Si el cortacesped no esta disponible ni activo, no se dibuja
             continue;
@@ -234,7 +273,7 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
     );
 
     // Lineas divisorias entre filas
-    for (int i = 0; i <= FILAS; i++) {
+    for (int i = 0; i <= filas_jardin; i++) {
 
         DrawLine(
             configuracion_juego.ancho_img_casa,

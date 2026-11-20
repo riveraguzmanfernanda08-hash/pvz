@@ -67,7 +67,7 @@ extern Proyectil proyectiles[CANT_PROYECTILES];
 extern int oleadaActual;
 extern int zombisRestantes;
 extern float temporizadorOleada;
-extern Cortacesped cortacespedes[FILAS];
+extern Cortacesped cortacespedes[max_filas];
 extern int juegoPerdido;
 extern float temporizadorEntreOleadas;
 extern int zombisFlagPendientes;

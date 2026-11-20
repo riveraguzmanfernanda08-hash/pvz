@@ -1,5 +1,6 @@
 #include "logica.h"
 #include "config.h"
+#include "lectura.h"
 #include <stdlib.h>
 #include <time.h>
 #include "raylib.h"
@@ -18,7 +19,7 @@ int oleadaActual = 1;
 int zombisRestantes = 0;
 float temporizadorOleada = 0;
 float temporizadorEntreOleadas = 0;
-Cortacesped cortacespedes[FILAS]; //guarda los cortacespedes
+Cortacesped cortacespedes[max_filas]; //guarda los cortacespedes
 int juegoPerdido = 0;
 int zombisFlagPendientes = 0;
 int zombisSinCabezaPendientes = 0;
@@ -113,16 +114,17 @@ void inicializarPlantas(void){
         plantas[i].cooldown=0;
         plantas[i].temporizador = 0;
         plantas[i].activa= 0; //todavia no esta colocada
-
-
     }
-
 }
 
 int colocarPlanta(int fila, int columna, int tipo) { // coloca una planta en la fila y columna indicada
     // Comprobar que la posicion este dentro del jardin
-    if(fila < 0 || fila >= FILAS ||
-        columna < 0 || columna >= COLUMNAS) {
+    if(fila < 0 || fila >= filas_jardin || columna < 0 || columna >= columnas_jardin) {
+        return 0;
+    }
+
+    // no se puede plantar sobre un obstaculo
+    if(esObstaculo(fila, columna)) {
         return 0;
     }
 
@@ -480,7 +482,7 @@ int generarZombi(void) {
             // Buscar una fila donde haya espacio para aparecer
             for(int intento = 0; intento < 20; intento++) {
 
-                fila = rand() % FILAS; // selecciona una fila aleatoria
+                fila = rand() % filas_jardin; // selecciona una fila aleatoria
                 espacioDisponible = 1;
 
                 for(int j = 0; j < CANT_ZOMBIS; j++) { // ve si hay otro zombi cerca de esa posicion
@@ -541,7 +543,7 @@ void actualizarOleadas(float tiempo) {
     if (zombisRestantes > 0) { //ve si todavia quedan zombies por generar
 
         temporizadorOleada += tiempo;
-
+        printf("%f + %f\n", temporizadorOleada, tiempo);
         if (temporizadorOleada >= configuracion_oleada.tiempo_entre_zombis) { //ve si ya paso el tiempo entre la aparicion de zombies
 
 
@@ -590,7 +592,7 @@ void actualizarOleadas(float tiempo) {
 
 
 void inicializarCortacespedes(void) {
-    for (int i = 0; i < FILAS; i++) {
+    for (int i = 0; i < filas_jardin; i++) {
         cortacespedes[i].x = configuracion_juego.posicion_cortacesped;
         cortacespedes[i].disponible = 1;
         cortacespedes[i].activo = 0;
@@ -599,7 +601,7 @@ void inicializarCortacespedes(void) {
 
 // se activa cuando un zombi vivo de su fila llega al borde del jardín
 void activarCortacespedes(void) {
-    for (int f = 0; f < FILAS; f++) {
+    for (int f = 0; f < filas_jardin; f++) {
         if (!cortacespedes[f].disponible) continue;//si el cortacesped ya no esta disponible, pasa a la siguiente fila
         for (int j = 0; j < CANT_ZOMBIS; j++) { //ve si un zombie vivo de esa fila llego al borde del jardin
             if (zombieVivo(j) && zombis[j].fila == f && zombis[j].x <= 0) { 
@@ -613,7 +615,7 @@ void activarCortacespedes(void) {
 
 // avanza y elimina a los zombis de su fila que toca
 void actualizarCortacespedes(float tiempo) {
-    for (int i = 0; i < FILAS; i++) {
+    for (int i = 0; i < filas_jardin; i++) {
 
         if (cortacespedes[i].activo == 1) { //ve si el cortacesped esta activo
 
@@ -645,7 +647,7 @@ void comprobarDerrota(void) {
             int fila = zombis[i].fila;
 
              // Ve que la fila sea valida y que su cortacesped no se este activo
-            if (fila >= 0 && fila < FILAS && cortacespedes[fila].disponible == 0 &&
+            if (fila >= 0 && fila < filas_jardin && cortacespedes[fila].disponible == 0 &&
                 cortacespedes[fila].activo == 0) {
 
                 juegoPerdido = 1; //activa la pantalla de derrota
