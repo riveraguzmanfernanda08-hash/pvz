@@ -21,6 +21,7 @@ Texture2D sol;
 Texture2D cardGuisante;
 Texture2D cardGirasol;
 Texture2D cardNuez;
+Texture2D cardCactus;
 
 void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
     InitWindow(
@@ -116,6 +117,7 @@ void cargarPlantas(void) {
     cardGuisante = LoadTexture("assets/peashooterCard.png");
     cardGirasol  = LoadTexture("assets/sunflowerCard.png");
     cardNuez     = LoadTexture("assets/wallnutCard.png");
+    cardCactus   = LoadTexture("assets/cactusCard.png");
 
     SetTextureFilter(girasol, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(nuez, TEXTURE_FILTER_BILINEAR);
@@ -126,6 +128,7 @@ void cargarPlantas(void) {
     SetTextureFilter(cardGuisante, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(cardGirasol, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(cardNuez, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(cardCactus, TEXTURE_FILTER_BILINEAR);
 }
 
 void liberarPlantas(void) {
@@ -255,14 +258,16 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 void dibujarMenu(void) {
 DrawRectangle(0, 0, 1000, ALTO_MENU, BROWN); //fondo del menu
 // coloca la imagen de sol
-Rectangle origenSol = { 0.0f, 0.0f, (float)sol.width, (float)sol.height };
-Rectangle destinoSol = { 42.0f - 20.0f, 47.0f - 20.0f, 40.0f, 40.0f };
-DrawTexturePro(sol, origenSol, destinoSol, (Vector2){ 0.0f, 0.0f }, 0.0f, WHITE);
+// Contador de soles
+DrawRectangleRounded((Rectangle){15, 15, 120, 70}, 0.2f, 8, (Color){55, 45, 35, 230});
 
-//convierte los soles a texto
+Rectangle origenSol = { 0, 0, (float)sol.width, (float)sol.height };
+Rectangle destinoSol = { 25, 30, 40, 40};
+DrawTexturePro(sol, origenSol, destinoSol, (Vector2){0, 0}, 0, WHITE);
+//convierte los soles en texto
 char textoSoles[20];
 sprintf(textoSoles, "%d", solesJugador);
-DrawText(textoSoles, 70, 35, 25, DARKBROWN);
+DrawText(textoSoles, 75, 32, 30, GOLD);
 
     // TARJETA DEL GUISANTE
     DrawTexturePro(
@@ -310,23 +315,19 @@ DrawText(textoSoles, 70, 35, 25, DARKBROWN);
     }
 
     // TARJETA DEL CACTUS
-    DrawRectangle(510, 10, 110, 80, BEIGE);
-    DrawText("Cactus", 520, 20, 15, DARKGREEN);
-    DrawText("125", 550, 65, 20, BLACK);
-
     DrawTexturePro(
-        cactus,
-        (Rectangle){0, 0, cactus.width, cactus.height},
-        (Rectangle){550, 35, 45, 30},
+        cardCactus,
+        (Rectangle){0, 0, (float)cardCactus.width, (float)cardCactus.height},
+        (Rectangle){510, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
+
     if (plantaSeleccionada == TIPO_CACTUS) {
-        DrawRectangleLinesEx((Rectangle){510, 10, 110, 80}, 4, GOLD);
+    DrawRectangleLinesEx((Rectangle){510, 10, 110, 80}, 4, GOLD);
     } else {
-        DrawRectangleLines(510, 10, 110, 80, BLACK);
+    DrawRectangleLines(510, 10, 110, 80, BLACK);
     }
 
     // TARJETA DE LA PALA
@@ -547,8 +548,22 @@ void dibujarProyectiles(void) {
 
 
 void dibujarOleada(void) {
-    //Convierte la oleada a texto
+    int zombisPorDerrotar = zombisRestantes;
+
+    // Contar los zombis que ya aparecieron y siguen vivos
+    for (int i = 0; i < CANT_ZOMBIS; i++) {
+        if (zombieVivo(i)) {
+            zombisPorDerrotar++;
+        }
+    }
+
+    // Mostrar zombis restantes
+    char textoZombis[30];
+    sprintf(textoZombis, "Zombis: %d", zombisPorDerrotar);
+    DrawText(textoZombis, 760, 15, 20, WHITE);
+
+    // Mostrar oleada actual
     char textoOleada[30];
     sprintf(textoOleada, "Oleada: %d", oleadaActual);
-    DrawText(textoOleada, 760, 35, 25, WHITE);
+    DrawText(textoOleada, 760, 55, 20, WHITE);
 }
