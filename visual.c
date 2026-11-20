@@ -4,6 +4,8 @@
 #include "logica.h"
 #include "constantes.h"
 #include <stdio.h>
+#include <math.h>
+#include "lectura.h"
 
 
 Texture2D jardin;

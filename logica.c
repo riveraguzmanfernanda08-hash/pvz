@@ -543,7 +543,6 @@ void actualizarOleadas(float tiempo) {
     if (zombisRestantes > 0) { //ve si todavia quedan zombies por generar
 
         temporizadorOleada += tiempo;
-        printf("%f + %f\n", temporizadorOleada, tiempo);
         if (temporizadorOleada >= configuracion_oleada.tiempo_entre_zombis) { //ve si ya paso el tiempo entre la aparicion de zombies
 
 

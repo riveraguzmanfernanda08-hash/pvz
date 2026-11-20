@@ -23,6 +23,6 @@ cactus 250 25 125 0 1.5
 
 oleadas
 zombis_por_oleada 5
-tiempo_entre_zombis 20.0
+tiempo_entre_zombis 18.0
 tiempo_entre_oleadas 5.0
 max_oleadas 5
