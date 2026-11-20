@@ -18,7 +18,13 @@ cd pvz/
 
 ## Como ejecutar el programa
 
+mapa original
 ```bash
-gcc *.c -o sorts -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-./sorts
+make
+./pvz
+```
+mapa 2
+```bash
+make
+./pvz mapa_2.txt
 ```
