@@ -17,13 +17,13 @@ zombi_cono 600 100 9
 
 
 plantas
-guisante 300 20 100 0 1.5
+guisante 300 40 100 0 1.5
 girasol 300 0 50 0 10.0
 nuez 4000 0 125 0 0.0
-cactus 250 25 125 0 1.5
+cactus 250 50 125 0 1.5
 
 oleadas
 zombis_por_oleada 5
-tiempo_entre_zombis 6.0
+tiempo_entre_zombis 10.0
 tiempo_entre_oleadas 5.0
 max_oleadas 5
