@@ -37,7 +37,7 @@ void inicializarConfiguracion(void) {
         .vida = 325, .dano = 75, .velocidad = 22
     };
     tipos_zombi[ZOMBI_SIN_CABEZA] = (TipoZombi) {
-        .vida = 600, .dano = 100, .velocidad = 9
+        .vida = 600, .dano = 100, .velocidad = 16
     };
 
     // --- Plantas ---
