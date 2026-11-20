@@ -134,8 +134,16 @@ void cargarNotasOleadas(void) {
     notasOleadas[4] = LoadTexture("assets/nota_oleada5.png");
 
     for (int i = 0; i < 5; i++) {
+
         if (notasOleadas[i].id != 0) {
+
             SetTextureFilter(notasOleadas[i], TEXTURE_FILTER_BILINEAR);
+            printf("Nota %d: Cargada correctamente\n", i + 1);
+
+        } else {
+
+            printf("Nota %d: ERROR al cargar la imagen\n", i + 1);
+
         }
     }
 }
@@ -622,6 +630,7 @@ void dibujarProyectiles(void) {
 }
 
 
+
 void dibujarOleada(void) {
 
     // Mostrar la nota de la oleada
@@ -635,22 +644,46 @@ void dibujarOleada(void) {
 
             Texture2D nota = notasOleadas[indiceNota];
 
+            // Reducir el tamaño de la imagen al 50 %
+            float escala = 0.5f;
+
+            float ancho = nota.width * escala;
+            float alto = nota.height * escala;
+
             // Centrar la imagen en la pantalla
             float x = (configuracion_juego.ancho_casa +
                        configuracion_juego.ancho_jardin -
-                       nota.width) / 2.0f;
+                       ancho) / 2.0f;
 
             float y = (configuracion_juego.alto_menu +
                        configuracion_juego.alto_jardin -
-                       nota.height) / 2.0f;
+                       alto) / 2.0f;
 
-            DrawTexture(nota, (int)x, (int)y, WHITE);
+            Rectangle origen = {
+                0, 0,
+                (float)nota.width,
+                (float)nota.height
+            };
+
+            Rectangle destino = {
+                x, y,
+                ancho, alto
+            };
+
+            DrawTexturePro(
+                nota,
+                origen,
+                destino,
+                (Vector2){0, 0},
+                0,
+                WHITE
+            );
         }
     }
 
+    // Contar zombis restantes
     int zombisPorDerrotar = zombisRestantes;
 
-    // Contar los zombis que ya aparecieron y siguen vivos
     for (int i = 0; i < CANT_ZOMBIS; i++) {
         if (zombieVivo(i)) {
             zombisPorDerrotar++;
