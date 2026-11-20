@@ -545,6 +545,7 @@ int generarZombi(void) {
 }
 
 
+
 void actualizarOleadas(float tiempo) {
 
     // Controlar el tiempo que aparece la nota de oleada
@@ -552,7 +553,8 @@ void actualizarOleadas(float tiempo) {
 
         temporizadorNotaOleada += tiempo;
 
-        if (temporizadorNotaOleada >= 3.0f) {
+        // La nota permanece visible durante 5 segundos
+        if (temporizadorNotaOleada >= 5.0f) {
             mostrarNotaOleada = 0;
             temporizadorNotaOleada = 0;
         }
@@ -592,14 +594,14 @@ void actualizarOleadas(float tiempo) {
 
             if (temporizadorEntreOleadas >= configuracion_oleada.tiempo_entre_oleadas) {
 
-                // Comprobar si terminamos la ultima oleada
+                // Comprobar si terminamos la última oleada
                 if (oleadaActual >= configuracion_oleada.max_oleadas) {
 
                     juegoGanado = 1;
                     return;
                 }
 
-                // Aumentar el numero de oleada
+                // Aumentar el número de oleada
                 oleadaActual++;
 
                 iniciarOleada();
@@ -609,6 +611,7 @@ void actualizarOleadas(float tiempo) {
         }
     }
 }
+
 
 void inicializarCortacespedes(void) {
     for (int i = 0; i < filas_jardin; i++) {
