@@ -5,7 +5,7 @@
 #include <time.h>
 #include "raylib.h"
 #include <math.h>
-
+#include <stdio.h>
 
 //variables y arreglos globales 
 Zombi zombis[CANT_ZOMBIS]; //guarda todos los zombis

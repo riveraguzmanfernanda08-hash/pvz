@@ -6,6 +6,7 @@
 #include "raylib.h"
 #include "config.h"
 #include "lectura.h"
+#include <string.h>
 
 Music musicaFondo;
 

@@ -5,6 +5,9 @@ void cerrarVentana(void);
 
 void cargarJardin(void);
 void liberarJardin(void);
+void cargarLapida(void);
+void liberarLapida(void);
+
 void dibujarJardin(void);
 void cargarCasa(void);
 void dibujarCasa(void);
