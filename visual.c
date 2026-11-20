@@ -4,6 +4,8 @@
 #include "logica.h"
 #include <stdio.h>
 
+
+Texture2D jardin;
 Texture2D casa;
 Texture2D cortacesped;
 Texture2D zombieFlag;
@@ -15,12 +17,17 @@ Texture2D girasol;
 Texture2D nuez;
 Texture2D cactus;
 Texture2D lanzaguisantes;
+Texture2D sol;
 
+Texture2D cardGuisante;
+Texture2D cardGirasol;
+Texture2D cardNuez;
 
 void iniciarVentana() { //inicializar ventana del juego con sus dimensiones y titulo
     InitWindow(
         configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
         configuracion_juego.alto_menu + FILAS * configuracion_juego.alto_celda,
+
         "Plants vs zombies"
     );
 
@@ -31,6 +38,17 @@ void cerrarVentana() { //cierra ventana
     CloseWindow();
 }
 
+
+
+// para que cargue el pasto
+void cargarJardin(void) {
+    jardin = LoadTexture("assets/pastito_solo_pasto.png");
+    SetTextureFilter(jardin, TEXTURE_FILTER_BILINEAR);
+}
+
+void liberarJardin(void) {
+    UnloadTexture(jardin);
+}
 
 void cargarCasa(void) {
     casa = LoadTexture("assets/casa.png");
@@ -97,10 +115,22 @@ void cargarPlantas(void) {
     cactus= LoadTexture("assets/cactus.png");
     lanzaguisantes= LoadTexture("assets/lanzaguisantes.png");
 
+    sol = LoadTexture("assets/Sun.png");
+
+    cardGuisante = LoadTexture("assets/peashooterCard.png");
+    cardGirasol  = LoadTexture("assets/sunflowerCard.png");
+    cardNuez     = LoadTexture("assets/wallnutCard.png");
+
     SetTextureFilter(girasol, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(nuez, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(cactus, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(lanzaguisantes, TEXTURE_FILTER_BILINEAR);
+
+    SetTextureFilter(sol, TEXTURE_FILTER_BILINEAR);
+
+    SetTextureFilter(cardGuisante, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(cardGirasol, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(cardNuez, TEXTURE_FILTER_BILINEAR);
 }
 
 void liberarPlantas(void) {
@@ -108,50 +138,24 @@ void liberarPlantas(void) {
     UnloadTexture(nuez);
     UnloadTexture(cactus);
     UnloadTexture(lanzaguisantes);
+    UnloadTexture(sol);
+    UnloadTexture(cardGuisante);
+    UnloadTexture(cardGirasol);
+    UnloadTexture(cardNuez);
 }
 
 void dibujarJardin() {
+    DrawRectangle(0, 0, configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin, configuracion_juego.alto_menu, BROWN);
 
-    DrawRectangle(     // Dibuja la parte  donde esta el menu
-        0, 0,
-        configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
-        configuracion_juego.alto_menu,
-        BROWN
+    DrawTexturePro(
+        jardin,
+        (Rectangle){0, 0, jardin.width, jardin.height},
+        (Rectangle){configuracion_juego.ancho_casa, configuracion_juego.alto_menu, configuracion_juego.ancho_jardin, configuracion_juego.alto_jardin},
+        (Vector2){0, 0},
+        0,
+        WHITE
     );
-
-    for (int i = 0; i < FILAS; i++) {
-
-        for (int j = 0; j < COLUMNAS; j++) {
-            // Calcula la posicion de cada casilla
-            int x = configuracion_juego.ancho_casa + j * configuracion_juego.ancho_celda;
-            int y = configuracion_juego.alto_menu + i * configuracion_juego.alto_celda;
-
-            Color color;
-
-            // Alternar colores de las casillas
-            if ((i + j) % 2 == 0) {
-                color = GREEN;
-            } else {
-                color = DARKGREEN;
-            }
-
-            DrawRectangle( // Dibuja cada casilla 
-                x, y,
-                configuracion_juego.ancho_celda,
-                configuracion_juego.alto_celda,
-                color
-            );
-
-            DrawRectangleLines( //Dibuja el borde de cada casilla 
-                x, y,
-                configuracion_juego.ancho_celda,
-                configuracion_juego.alto_celda,
-                BLACK
-            );
-        }
-    }
 }
-
 
 void dibujarCasa(void) {
 
@@ -250,71 +254,60 @@ void dibujarCarril(void) { //Es el carril que esta entre la casa y el jardin
 
 
 
+// carga el menu de arriba (para seleccionar plantas, pala)
 void dibujarMenu(void) {
-    DrawRectangle(0, 0, 1000, configuracion_juego.alto_menu, BROWN); //Fondo del menu
+DrawRectangle(0, 0, 1000, configuracion_juego.alto_menu, BROWN); //fondo del menu
+// coloca la imagen de sol
+Rectangle origenSol = { 0.0f, 0.0f, (float)sol.width, (float)sol.height };
+Rectangle destinoSol = { 42.0f - 20.0f, 47.0f - 20.0f, 40.0f, 40.0f };
+DrawTexturePro(sol, origenSol, destinoSol, (Vector2){ 0.0f, 0.0f }, 0.0f, WHITE);
 
-    DrawCircle(42, 47, 20, GOLD); // Mostrar cantidad de soles
-    //Convierte los soles a texto
-    char textoSoles[20];
-    sprintf(textoSoles, "%d", solesJugador);
-    DrawText(textoSoles, 70, 35, 25, DARKBROWN);
+//convierte los soles a texto
+char textoSoles[20];
+sprintf(textoSoles, "%d", solesJugador);
+DrawText(textoSoles, 70, 35, 25, DARKBROWN);
 
     // TARJETA DEL GUISANTE
-    DrawRectangle(150, 10, 110, 80, BEIGE);
-    DrawText("Guisante", 160, 20, 15, DARKGREEN);
-    DrawText("100", 190, 65, 20, BLACK);
-
     DrawTexturePro(
-        lanzaguisantes,
-        (Rectangle){0, 0, lanzaguisantes.width, lanzaguisantes.height},
-        (Rectangle){190, 35, 45, 30},
+        cardGuisante,
+        (Rectangle){0, 0, (float)cardGuisante.width, (float)cardGuisante.height},
+        (Rectangle){150, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
     if (plantaSeleccionada == TIPO_GUISANTE) {
         DrawRectangleLinesEx((Rectangle){150, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(150, 10, 110, 80, BLACK);
     }
 
-
     // TARJETA DEL GIRASOL
-    DrawRectangle(270, 10, 110, 80, BEIGE);
-    DrawText("Girasol", 280, 20, 15, DARKGREEN);
-    DrawText("50", 315, 65, 20, BLACK);
-
     DrawTexturePro(
-        girasol,
-        (Rectangle){0, 0, girasol.width, girasol.height},
-        (Rectangle){310, 35, 45, 30},
+        cardGirasol,
+        (Rectangle){0, 0, (float)cardGirasol.width, (float)cardGirasol.height},
+        (Rectangle){270, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
-    if (plantaSeleccionada == TIPO_GIRASOL) {
+
+	if (plantaSeleccionada == TIPO_GIRASOL) {
         DrawRectangleLinesEx((Rectangle){270, 10, 110, 80}, 4, GOLD);
     } else {
         DrawRectangleLines(270, 10, 110, 80, BLACK);
     }
 
-
     // TARJETA DE LA NUEZ
-    DrawRectangle(390, 10, 110, 80, BEIGE);
-    DrawText("Nuez", 400, 20, 15, DARKGREEN);
-    DrawText("50", 435, 65, 20, BLACK);
-
     DrawTexturePro(
-        nuez,
-        (Rectangle){0, 0, nuez.width, nuez.height},
-        (Rectangle){430, 35, 45, 30},
+        cardNuez,
+        (Rectangle){0, 0, (float)cardNuez.width, (float)cardNuez.height},
+        (Rectangle){390, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
+
     if (plantaSeleccionada == TIPO_NUEZ) {
         DrawRectangleLinesEx((Rectangle){390, 10, 110, 80}, 4, GOLD);
     } else {
@@ -342,29 +335,16 @@ void dibujarMenu(void) {
     }
 
     // TARJETA DE LA PALA
-    DrawRectangle(630, 10, 110, 80, BEIGE);
-    DrawText("Pala", 640, 18, 15, DARKGREEN);
-
-    Rectangle origen = {
-        0, 0,
-        (float)pala.width,
-        (float)pala.height
-    };
-
-    Rectangle destino = {
-        668, 25,
-        60, 60
-    };
 
     DrawTexturePro(
         pala,
-        origen,
-        destino,
+        (Rectangle){0, 0, (float)pala.width, (float)pala.height},
+        (Rectangle){630, 10, 110, 80},
         (Vector2){0, 0},
         0,
         WHITE
     );
-    //Se resalta cuando es seleccionada
+	
     if (palaSeleccionada == 1) {
         DrawRectangleLinesEx((Rectangle){630, 10, 110, 80}, 4, GOLD);
     } else {
@@ -453,7 +433,8 @@ void dibujarPlantas(void) {
 
         if (plantas[i].activa == 1) {
             //Calcula la posicion de la planta segun su fila y columna
-            int x = configuracion_juego.ancho_casa + plantas[i].columna * configuracion_juego.ancho_celda;
+
+			int x = configuracion_juego.ancho_casa + plantas[i].columna * configuracion_juego.ancho_celda;
             int y = configuracion_juego.alto_menu + plantas[i].fila * configuracion_juego.alto_celda;
 
             // Posicion y tamaño de las plantas
@@ -544,15 +525,13 @@ void dibujarPlantas(void) {
 
 void dibujarSoles(void) {
 
-    for (int i = 0; i < CANT_SOLES; i++) { //Recorre todos los soles
-
-        if (soles[i].activo == 1) { //Ve si esta activo
-            //Se obtiene la posicion del sol
+    for (int i = 0; i < CANT_SOLES; i++) { // Recorre todos los soles
+        if (soles[i].activo == 1) { // Ve si esta activo
+            // Se obtiene la posicion del sol
             int x = configuracion_juego.ancho_casa + (int)soles[i].x;
             int y = (int)soles[i].y;
 
-            DrawCircle(x, y, 18, GOLD);
-            DrawCircle(x, y, 12, YELLOW);
+            DrawTexture(sol, x - sol.width / 2, y - sol.height / 2, WHITE);
         }
     }
 }

@@ -1,5 +1,7 @@
 #include "config.h"
 
+#include "logica.h"
+
 ConfiguracionJuego configuracion_juego;
 TipoZombi tipos_zombi[NUM_TIPOS_ZOMBI];
 TipoPlanta tipos_planta[NUM_TIPOS_PLANTA];
@@ -33,7 +35,8 @@ void inicializarConfiguracion(void) {
         .vida = 325, .dano = 50, .velocidad = 17
     };
     tipos_zombi[ZOMBI_FLAG] = (TipoZombi) {
-        .vida = 325, .dano = 75, .velocidad = 25
+
+        .vida = 325, .dano = 75, .velocidad = 22
     };
     tipos_zombi[ZOMBI_SIN_CABEZA] = (TipoZombi) {
         .vida = 600, .dano = 100, .velocidad = 9

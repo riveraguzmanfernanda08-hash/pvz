@@ -46,7 +46,7 @@ int main(void) {
     SetMusicVolume(musicaFondo, 0.4f);
     PlayMusicStream(musicaFondo);
 
-    //Cargar imágenes
+    cargarJardin();
     cargarCasa();
     cargarPlantas();
     cargarCortacesped();
@@ -194,6 +194,7 @@ int main(void) {
                 0, 0,
                 configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin,
                 configuracion_juego.alto_menu + configuracion_juego.alto_jardin,
+
                 Fade(BLACK, 0.65f)
             );
 
@@ -220,6 +221,7 @@ int main(void) {
             DrawText( //Muestra el mensaje
                 "¡VICTORIA!",
                 (configuracion_juego.ancho_casa + configuracion_juego.ancho_jardin - MeasureText("¡VICTORIA!", 60)) / 2,
+
                 270,
                 60,
                 GOLD
@@ -262,6 +264,7 @@ int main(void) {
 
 
     // LIBERAR RECURSOS
+    liberarJardin();
     liberarCasa();
     liberarPlantas();
     liberarCortacesped();

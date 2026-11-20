@@ -51,6 +51,7 @@ void moverZombis(float tiempo) { //actualiza la posicion de los zombies para que
 
             float velocidad = zombis[i].velocidad;
 
+
             // Si no hay una planta delante, avanza
             if (!hayPlantaDelante(zombis[i].fila, zombis[i].x)) {
                 zombis[i].x -= velocidad * tiempo;
@@ -80,7 +81,8 @@ void recibirDano(int numeroZombie, int cantidadDano){ //resta vida al zombie cua
 
 
 void inicializarPlantas(void){
-    for(int i = 0; i < CANT_PLANTAS; i++){
+
+    for(int i=0;i<CANT_PLANTAS; i++){
         plantas[i].tipo=-1; //todavia no elige 
         plantas[i].fila= -1; //sin posicion
         plantas[i].columna= -1; //sin posicion
@@ -118,6 +120,7 @@ int colocarPlanta(int fila, int columna, int tipo) { // coloca una planta en la 
 
     // Comprobar que la casilla no este ocupada
     for(int i = 0; i < CANT_PLANTAS; i++) {
+
         if (plantas[i].activa == 1 &&
             plantas[i].fila == fila &&
             plantas[i].columna == columna) {
@@ -129,10 +132,12 @@ int colocarPlanta(int fila, int columna, int tipo) { // coloca una planta en la 
     for(int i = 0; i < CANT_PLANTAS; i++) {
         if (plantas[i].activa == 0) {
             plantas[i] = nueva;
+
             plantas[i].tipo = tipo;
             plantas[i].fila = fila;
             plantas[i].columna = columna;
             plantas[i].temporizador = 0;
+
             plantas[i].activa = 1;
 
             solesJugador -= nueva.costoSoles;
@@ -157,6 +162,7 @@ void generarSol(void) {  //genera un sol en una posicion aleatoria del jardin
         if (soles[i].activo == 0) { //busca un espacio libre en el arreglo.
             soles[i].x = 50 + rand() % (configuracion_juego.ancho_jardin - 100); //Genera una posicion aleatoria dentro del jardin.
             soles[i].y = configuracion_juego.alto_menu + 30 + rand() % (configuracion_juego.alto_jardin - 60);
+
 
             soles[i].activo = 1; //Activa el sol para que pueda dibujarse.
             return;
@@ -185,6 +191,7 @@ void actualizarSoles(float tiempo) {
     temporizadorSol += tiempo;
 
     if (temporizadorSol >= configuracion_juego.cooldown_sol) { //genera un sol cuando se cumple el cooldown
+
         generarSol();
         temporizadorSol = 0; //reinicia el temporizador
     }
@@ -211,6 +218,7 @@ void producirSoles(float tiempo) { //produccion de soles por el girasol
                 //calcula el centro de la casilla donde esta el girasol
                 float x = plantas[i].columna * configuracion_juego.ancho_celda + configuracion_juego.ancho_celda / 2;
                 float y = configuracion_juego.alto_menu + plantas[i].fila * configuracion_juego.alto_celda + configuracion_juego.alto_celda / 2;
+
                 if (generarSolEn(x, y)) { //genera un sol en la posicion del girasol
                     plantas[i].temporizador = 0; //reinicia el temporizador si pudo crear el sol
                 }
@@ -419,7 +427,6 @@ void atacarPlanta(float tiempo) {
 
 
 void iniciarOleada(void) {
-
     zombisRestantes = configuracion_oleada.zombis_por_oleada * oleadaActual;
 
     // Calcula cuantos zombis bandera apareceran
@@ -467,6 +474,7 @@ int generarZombi(void) {
                 }
 
                 if(espacioDisponible) { // si hay espacio termina la busqueda
+
                     break;
                 }
             }
@@ -515,6 +523,7 @@ void actualizarOleadas(float tiempo) {
 
         if (temporizadorOleada >= configuracion_oleada.tiempo_entre_zombis) { //ve si ya paso el tiempo entre la aparicion de zombies
 
+
             if (generarZombi()) { //intenta generar un zombi
                 zombisRestantes--;
                 temporizadorOleada = 0; //reinicia el temporizador 
@@ -543,6 +552,7 @@ void actualizarOleadas(float tiempo) {
 
                 // Comprobamos si terminamos la ultima oleada
                 if (oleadaActual >= configuracion_oleada.max_oleadas) {
+
                     juegoGanado = 1;
                     return;
                 }
@@ -591,6 +601,7 @@ void actualizarCortacespedes(float tiempo) {
                 if (zombieVivo(j) &&
                     zombis[j].fila == i &&
                     zombis[j].x <= cortacespedes[i].x + configuracion_juego.ancho_celda) {
+
 
                     zombis[j].vida = 0; //elimina al zombie que toca el cortacesped
                 }
