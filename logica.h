@@ -73,6 +73,8 @@ extern float temporizadorEntreOleadas;
 extern int zombisFlagPendientes;
 extern int palaSeleccionada;
 extern int juegoGanado;
+extern int mostrarNotaOleada;
+extern float temporizadorNotaOleada;
 
 
 
