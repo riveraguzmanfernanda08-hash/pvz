@@ -96,6 +96,7 @@ int main(int argc, char *argv[]) {
     cargarZombieNormal();
     cargarZombieSinCabeza();
     cargarPala();
+    cargarNotasOleadas();
 
     // Inicializar elementos del juego
     inicializarZombis();
@@ -306,6 +307,7 @@ int main(int argc, char *argv[]) {
     liberarZombieNormal();
     liberarZombieSinCabeza();
     liberarPala();
+    liberarNotasOleadas();
 
     // Liberar música y audio
     StopMusicStream(musicaFondo);

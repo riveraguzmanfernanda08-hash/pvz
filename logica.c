@@ -25,7 +25,8 @@ int zombisFlagPendientes = 0;
 int zombisSinCabezaPendientes = 0;
 int palaSeleccionada = 0;
 int juegoGanado = 0;
-
+int mostrarNotaOleada = 0;
+float temporizadorNotaOleada = 0;
 
 
 void inicializarZombis(void) {
@@ -470,6 +471,11 @@ void iniciarOleada(void) {
     }
 
     temporizadorOleada = 0; //reinicia el tiempo de la oleada
+
+
+    // Mostrar la nota de la oleada
+    mostrarNotaOleada = 1;
+    temporizadorNotaOleada = 0;
 }
 
 int generarZombi(void) {
@@ -540,15 +546,29 @@ int generarZombi(void) {
 
 
 void actualizarOleadas(float tiempo) {
-    if (zombisRestantes > 0) { //ve si todavia quedan zombies por generar
+
+    // Controlar el tiempo que aparece la nota de oleada
+    if (mostrarNotaOleada == 1) {
+
+        temporizadorNotaOleada += tiempo;
+
+        if (temporizadorNotaOleada >= 3.0f) {
+            mostrarNotaOleada = 0;
+            temporizadorNotaOleada = 0;
+        }
+
+        return;
+    }
+
+    if (zombisRestantes > 0) {
 
         temporizadorOleada += tiempo;
-        if (temporizadorOleada >= configuracion_oleada.tiempo_entre_zombis) { //ve si ya paso el tiempo entre la aparicion de zombies
 
+        if (temporizadorOleada >= configuracion_oleada.tiempo_entre_zombis) {
 
-            if (generarZombi()) { //intenta generar un zombi
+            if (generarZombi()) {
                 zombisRestantes--;
-                temporizadorOleada = 0; //reinicia el temporizador 
+                temporizadorOleada = 0;
             }
         }
     }
@@ -558,7 +578,7 @@ void actualizarOleadas(float tiempo) {
 
         int zombisVivos = 0;
 
-        for (int i = 0; i < CANT_ZOMBIS; i++) { //cuenta cuantos zombies estan vivos
+        for (int i = 0; i < CANT_ZOMBIS; i++) {
 
             if (zombieVivo(i)) {
                 zombisVivos++;
@@ -572,23 +592,23 @@ void actualizarOleadas(float tiempo) {
 
             if (temporizadorEntreOleadas >= configuracion_oleada.tiempo_entre_oleadas) {
 
-                // Comprobamos si terminamos la ultima oleada
+                // Comprobar si terminamos la ultima oleada
                 if (oleadaActual >= configuracion_oleada.max_oleadas) {
 
                     juegoGanado = 1;
                     return;
                 }
 
-                oleadaActual++;//aumenta el numero de oleada y la inicia
+                // Aumentar el numero de oleada
+                oleadaActual++;
 
                 iniciarOleada();
 
-                temporizadorEntreOleadas = 0; //reincia el temporizador entre oleadas
+                temporizadorEntreOleadas = 0;
             }
         }
     }
 }
-
 
 void inicializarCortacespedes(void) {
     for (int i = 0; i < filas_jardin; i++) {

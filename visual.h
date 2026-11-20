@@ -7,6 +7,8 @@ void cargarJardin(void);
 void liberarJardin(void);
 void cargarLapida(void);
 void liberarLapida(void);
+void cargarNotasOleadas(void);
+void liberarNotasOleadas(void);
 
 void dibujarJardin(void);
 void cargarCasa(void);

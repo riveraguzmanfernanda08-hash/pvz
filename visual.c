@@ -10,6 +10,7 @@
 
 Texture2D jardin;
 Texture2D casa;
+Texture2D notasOleadas[5];
 Texture2D cortacesped;
 Texture2D zombieFlag;
 Texture2D zombieNormal;
@@ -123,6 +124,31 @@ void cargarPala(void) {
 void liberarPala(void) {
     UnloadTexture(pala);
 }
+
+void cargarNotasOleadas(void) {
+
+    notasOleadas[0] = LoadTexture("assets/nota_oleada1.png");
+    notasOleadas[1] = LoadTexture("assets/nota_oleada2.png");
+    notasOleadas[2] = LoadTexture("assets/nota_oleada3.png");
+    notasOleadas[3] = LoadTexture("assets/nota_oleada4.png");
+    notasOleadas[4] = LoadTexture("assets/nota_oleada5.png");
+
+    for (int i = 0; i < 5; i++) {
+        if (notasOleadas[i].id != 0) {
+            SetTextureFilter(notasOleadas[i], TEXTURE_FILTER_BILINEAR);
+        }
+    }
+}
+
+void liberarNotasOleadas(void) {
+
+    for (int i = 0; i < 5; i++) {
+        if (notasOleadas[i].id != 0) {
+            UnloadTexture(notasOleadas[i]);
+        }
+    }
+}
+
 
 void cargarPlantas(void) {
     girasol= LoadTexture("assets/girasol.png");
@@ -597,6 +623,31 @@ void dibujarProyectiles(void) {
 
 
 void dibujarOleada(void) {
+
+    // Mostrar la nota de la oleada
+    if (mostrarNotaOleada == 1) {
+
+        int indiceNota = oleadaActual - 1;
+
+        // Comprobar que exista una imagen para esta oleada
+        if (indiceNota >= 0 && indiceNota < 5 &&
+            notasOleadas[indiceNota].id != 0) {
+
+            Texture2D nota = notasOleadas[indiceNota];
+
+            // Centrar la imagen en la pantalla
+            float x = (configuracion_juego.ancho_casa +
+                       configuracion_juego.ancho_jardin -
+                       nota.width) / 2.0f;
+
+            float y = (configuracion_juego.alto_menu +
+                       configuracion_juego.alto_jardin -
+                       nota.height) / 2.0f;
+
+            DrawTexture(nota, (int)x, (int)y, WHITE);
+        }
+    }
+
     int zombisPorDerrotar = zombisRestantes;
 
     // Contar los zombis que ya aparecieron y siguen vivos
