@@ -45,10 +45,10 @@ void inicializarConfiguracion(void) {
         .vida = 300, .dano = 40, .costo = 100, .produccion = 0, .cooldown = 1.5f
     };
     tipos_planta[TIPO_GIRASOL] = (TipoPlanta) {
-        .vida = 300, .dano = 0, .costo = 50, .produccion = 0, .cooldown = 10.0f
+        .vida = 300, .dano = 0, .costo = 50, .produccion = 0, .cooldown = 12.0f
     };
     tipos_planta[TIPO_NUEZ] = (TipoPlanta) {
-        .vida = 4000, .dano = 0, .costo = 50, .produccion = 0, .cooldown = 0.0f
+        .vida = 4000, .dano = 0, .costo = 125, .produccion = 0, .cooldown = 0.0f
     };
     tipos_planta[TIPO_CACTUS] = (TipoPlanta) {
         .vida = 250, .dano = 50, .costo = 125, .produccion = 0, .cooldown = 1.5f

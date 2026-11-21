@@ -28,3 +28,7 @@ mapa 2
 make
 ./pvz mapa_2.txt
 ```
+
+## DECLARACIÓN DE USO DE IA
+
+Durante el desarrollo del proyecto se utilizó IA como apoyo para corregir errores de compilación y conflictos de código, recibir orientación paso a paso para agregar funcionalidades, verificar que el proyecto cumpliera los requisitos de la rúbrica, y ubicar las imágenes de forma centrada, con el tamaño y la posición correctos. Todo el código fue revisado, probado e integrado por los integrantes del grupo.
